@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/30 18:48:56 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 15:15:15 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-void close_fds(t_parser *tmp, t_child_p *new_child, int *prev_in, int fd[2])
+void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in,
+		int fd[2])
 {
-	if (new_child->id > 0)
+	if (pipe_hand->child_proc > 0)
 	{
 		if (tmp->next != NULL)
 		{
@@ -55,38 +56,32 @@ void	get_prev_pipe(t_utils_pipe *pipe_hand, t_parser *tmp, int *prev_in)
 	}
 }
 
-void init_pipe(t_parser *tmp, t_utils_pipe *pipe_hand)
+void	init_pipe(t_utils_pipe *pipe_hand)
 {
-	if (tmp->next != NULL)
+	if (pipe(pipe_hand->fd) == -1)
 	{
-		if (pipe(pipe_hand->fd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
+		perror("pipe");
+		exit(EXIT_FAILURE);
 	}
 }
 
-void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand, char **envp)
+void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
+		char **envp)
 {
-	t_child_p	*new_child;
-
-	new_child = give_child_back(pipe_hand);
-	new_child->id = fork();
-	if (new_child->id == 0)
+	pipe_hand->child_proc = fork();
+	if (pipe_hand->child_proc == 0)
 	{
 		get_prev_pipe(pipe_hand, tmp, prev_in);
 		execute_fun(tmp, envp);
 	}
-	else if (new_child->id == -1)
+	else if (pipe_hand->child_proc == -1)
 		printf("fd error\n");
-	close_fds(tmp, new_child, prev_in, pipe_hand->fd);
+	close_fds(tmp, pipe_hand, prev_in, pipe_hand->fd);
 }
 
-char **execute_pipes(t_parser *parser_list, char **envp)
+char	**execute_pipes(t_parser *parser_list, char **envp)
 {
 	t_parser		*tmp;
-	t_child_p		*current;
 	t_utils_pipe	*pipe_hand;
 	int				prev_in;
 
@@ -99,21 +94,15 @@ char **execute_pipes(t_parser *parser_list, char **envp)
 	{
 		while (tmp)
 		{
-			init_pipe(tmp, pipe_hand);
+			init_pipe(pipe_hand);
 			if (build_in_flag(tmp))
 				envp = check_if_buildin(tmp, envp);
 			else if (!build_in_flag(tmp))
 				init_child_proc(tmp, &prev_in, pipe_hand, envp);
 			tmp = tmp->next;
 		}
-		current = pipe_hand->child_proc;
-		while (current)
-		{
-			WEXITSTATUS(pipe_hand->exit_stat);
-			waitpid(current->id, &pipe_hand->exit_stat, 0);
-			current = current->next;
-		}
-		// free(pipe_hand->child_proc);
+		WEXITSTATUS(pipe_hand->exit_stat);
+		waitpid(pipe_hand->child_proc, &pipe_hand->exit_stat, 0);
 		free(pipe_hand);
 	}
 	return (envp);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/30 17:02:00 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 15:19:46 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,6 @@ typedef struct s_parser
 	struct s_parser		*next;
 }						t_parser;
 
-typedef struct s_child_p
-{
-	pid_t				id;
-	struct s_child_p	*next;
-}						t_child_p;
-
 typedef struct s_utils_pipe
 {
 	char				**command;
@@ -65,10 +59,12 @@ typedef struct s_utils_pipe
 	int					fd_out;
 	int					fd_in;
 	int					exit_stat;
-	t_child_p			*child_proc;
+	pid_t				child_proc;
 	struct s_utils_pipe	*next;
 }						t_utils_pipe;
 
+void					close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
+							int *prev_in, int fd[2]);
 void					ft_free_path(char **arr);
 char					**x_path(char **envp, char *command);
 char					**execute_pipes(t_parser *parser_list, char **envp);
@@ -97,10 +93,8 @@ t_parser				*create_2d_array_per_node(t_parser *parser_list,
 							t_lexer *lexer_list);
 void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
 void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
-t_child_p				*give_child_back(t_utils_pipe *pid_handle);
 t_lexer					*expander(t_lexer *lexer_list, char **envp);
 size_t					len_without_empty_strings(char *word);
-// void					build_in_handle(t_parser *parser_list, char **envp);
 char					**check_if_buildin(t_parser *parser_list, char **envp);
 int						build_in_echo(char **d2_wds);
 int						build_in_cd(char **path);
