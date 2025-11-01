@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expanding.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/10/30 14:02:29 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 14:16:20 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 	char	*exp_var;
 	int		i;
 	int		j;
-	int		len;
+	int		len = 0;
 
 	var = ft_substr(word, start, len_var);
 	i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 10:00:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/10/22 21:47:57 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/01 14:42:02 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ t_lexer	*lexing(char *string)
 	i = 0;
 	lexer_list = NULL;
 	node = NULL;
+	if (string[0] == '\0')
+		return (NULL);
 	if (check_input(string) == 1)
 		return (NULL);
 	split_str = mini_split(string, ' ');

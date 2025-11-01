@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:16:32 by schabboe          #+#    #+#             */
-/*   Updated: 2025/09/25 17:17:02 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 14:42:25 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ t_parser	*parsing(char *string, char **envp)
 	parser_list = NULL;
 	nbr_commands_and_pipes = 0;
 	lexer_list = lexing(string);
+	if (lexer_list == NULL)
+		return (NULL);
 	temp = lexer_list;
 	node = create_node_p();
 	node->nbr_red = 0;
