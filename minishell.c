@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/10/30 18:49:45 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 14:08:29 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	while (1)
 	{
+		printf("hi i can commit stuff");
 		rl = readline("minishell > ");
 		parser_list = parsing(rl, envp);
 		envp = execute_pipes(parser_list, envp);
