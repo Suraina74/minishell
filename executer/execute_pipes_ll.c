@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/01 15:21:29 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/01 15:36:04 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	tmp->exit_stat = -1;
 	tmp->fd_in = -1;
 	tmp->fd_out = -1;
-	tmp->child_proc = -1;
 	tmp->next = NULL;
+	tmp->child_proc = -1;
 	*cmd_struct = tmp;
 }
 
@@ -72,7 +72,7 @@ void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp)
 		}
 		if (tmp->redirections->token == ININ)
 		{
-			printf("Heredoc start\n");
+			printf("Heredoc\n");
 		}
 	}
 }

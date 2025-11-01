@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/01 15:15:15 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/01 15:36:31 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 				envp = check_if_buildin(tmp, envp);
 			else if (!build_in_flag(tmp))
 				init_child_proc(tmp, &prev_in, pipe_hand, envp);
+			// get_prev_pipe(pipe_hand, tmp, &prev_in);
 			tmp = tmp->next;
 		}
 		WEXITSTATUS(pipe_hand->exit_stat);
