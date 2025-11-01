@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/01 15:36:31 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/01 16:58:55 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in,
 
 void	get_prev_pipe(t_utils_pipe *pipe_hand, t_parser *tmp, int *prev_in)
 {
-	start_is_fd(pipe_hand, tmp);
 	if (*prev_in != -1)
 	{
 		if (dup2(*prev_in, STDIN_FILENO) == -1)
@@ -72,7 +71,13 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 	if (pipe_hand->child_proc == 0)
 	{
 		get_prev_pipe(pipe_hand, tmp, prev_in);
-		execute_fun(tmp, envp);
+		if (build_in_flag(tmp))
+		{
+			execute_buildin(tmp, envp);
+			exit(0);
+		}
+		else
+			execute_fun(tmp, envp);
 	}
 	else if (pipe_hand->child_proc == -1)
 		printf("fd error\n");
@@ -88,22 +93,19 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 	prev_in = -1;
 	tmp = parser_list;
 	init_cmd(&pipe_hand);
-	if (build_in_flag(tmp) && tmp->next != NULL)
-		envp = check_if_buildin(tmp, envp);
+	if (build_in_flag(tmp) && tmp->next == NULL)
+		envp = execute_buildin(tmp, envp);
 	else
 	{
 		while (tmp)
 		{
 			init_pipe(pipe_hand);
-			if (build_in_flag(tmp))
-				envp = check_if_buildin(tmp, envp);
-			else if (!build_in_flag(tmp))
-				init_child_proc(tmp, &prev_in, pipe_hand, envp);
-			// get_prev_pipe(pipe_hand, tmp, &prev_in);
+			start_is_fd(pipe_hand, tmp);
+			init_child_proc(tmp, &prev_in, pipe_hand, envp);
 			tmp = tmp->next;
 		}
+		while (waitpid(pipe_hand->child_proc, &pipe_hand->exit_stat, 0) > 0);
 		WEXITSTATUS(pipe_hand->exit_stat);
-		waitpid(pipe_hand->child_proc, &pipe_hand->exit_stat, 0);
 		free(pipe_hand);
 	}
 	return (envp);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/30 16:58:01 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/01 16:44:36 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-char **check_if_buildin(t_parser *parser_list, char **envp)
+char **execute_buildin(t_parser *parser_list, char **envp)
 {
 	size_t		i;
 	t_parser	*tmp;

@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/01 15:19:46 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/01 16:44:45 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
 void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
 t_lexer					*expander(t_lexer *lexer_list, char **envp);
 size_t					len_without_empty_strings(char *word);
-char					**check_if_buildin(t_parser *parser_list, char **envp);
+char					**execute_buildin(t_parser *parser_list, char **envp);
 int						build_in_echo(char **d2_wds);
 int						build_in_cd(char **path);
 void					build_in_pwd(void);
