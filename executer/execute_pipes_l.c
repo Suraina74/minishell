@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/01 16:58:55 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/05 13:46:24 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in,
 		{
 			if (*prev_in != -1)
 				close(*prev_in);
+			close(fd[FD_WRITE]);
+			close(fd[FD_READ]);
 		}
 	}
 }
@@ -104,7 +106,14 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 			init_child_proc(tmp, &prev_in, pipe_hand, envp);
 			tmp = tmp->next;
 		}
-		while (waitpid(pipe_hand->child_proc, &pipe_hand->exit_stat, 0) > 0);
+		//this also needs to change for signal stuff!!
+		waitpid(pipe_hand->child_proc, &pipe_hand->exit_stat, 0);
+		while (waitpid(-1, NULL, 0) > 0)
+		;
+		// while (waitpid(-1, NULL, WNOHANG) > 0) 
+		// {
+		// 	//signal stuff!!
+		// }
 		WEXITSTATUS(pipe_hand->exit_stat);
 		free(pipe_hand);
 	}
