@@ -6,7 +6,7 @@ executer/exe_cmd.c executer/execute_pipes_l.c executer/execute_pipes_ll.c execut
 expander/empty_quotes_delete.c expander/empty_quotes_len.c \
 executer/executer_utils.c buildins/build_in_handler.c \
 buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins/build_in_env.c \
- buildins/build_in_exit.c buildins/build_in_export.c buildins/build_in_unset.c 
+ buildins/build_in_exit.c buildins/build_in_export.c buildins/build_in_unset.c executer/heredoc.c
 
 CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 LIBFT_DIR = ./libft

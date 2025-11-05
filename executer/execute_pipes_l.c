@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/05 13:46:24 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/05 15:04:42 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in,
 		{
 			if (*prev_in != -1)
 				close(*prev_in);
-			close(fd[FD_WRITE]);
-			close(fd[FD_READ]);
 		}
 	}
 }
@@ -115,7 +113,7 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 		// 	//signal stuff!!
 		// }
 		WEXITSTATUS(pipe_hand->exit_stat);
-		free(pipe_hand);
 	}
+	free(pipe_hand);
 	return (envp);
 }
