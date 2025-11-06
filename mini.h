@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/05 14:14:09 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:43:49 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_parser
 	char				**words;
 	int					nbr_red;
 	t_lexer				*redirections;
+	char				*heredoc;
 	struct s_parser		*next;
 }						t_parser;
 
@@ -95,18 +96,20 @@ void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
 void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
 t_lexer					*expander(t_lexer *lexer_list, char **envp);
 size_t					len_without_empty_strings(char *word);
-char					**execute_buildin(t_parser *parser_list, char **envp);
+// char					**execute_buildin(t_parser *parser_list, char **envp);
+int						execute_buildin(t_parser *parser_list, char **envp);
 int						build_in_echo(char **d2_wds);
 int						build_in_cd(char **path);
-void					build_in_pwd(void);
-void					build_in_exit(t_parser *parser_list);
+int						build_in_pwd(void);
+int						build_in_exit(t_parser *parser_list);
 char					**build_in_export(t_parser *parser_list, char **envp);
-void					build_in_env(char **envp);
+int						build_in_env(char **envp);
 int						build_in_flag(t_parser *parser_list);
 void					execute_fun(t_parser *tmp, char **envp);
 void					init_child_proc(t_parser *tmp, int *prev_in,
 							t_utils_pipe *pipe_hand, char **envp);
 void					init_cmd(t_utils_pipe **cmd_struct);
-void					heredoc_start(t_utils_pipe *pipe_hand);
+void					heredoc_start(t_parser *parsing,
+							t_utils_pipe *pipe_hand);
 
 #endif

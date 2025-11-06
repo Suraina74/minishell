@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/05 14:14:28 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 14:20:41 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp)
 		{
 			tmp->redirections = tmp->redirections->next;
 			pipe_hand->fd_in = open(tmp->redirections->word, O_RDONLY);
-			if (dup2(pipe_hand->fd_in, STDIN_FILENO) == 1)
+			if (dup2(pipe_hand->fd_in, STDIN_FILENO) == -1)
 			{
 				perror("dup2");
 				close(pipe_hand->fd_in);
@@ -72,7 +72,8 @@ void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp)
 		}
 		if (tmp->redirections->token == ININ)
 		{
-			heredoc_start(pipe_hand);
+			pipe_hand->fd_in = 0;
+			heredoc_start(tmp, pipe_hand);
 		}
 	}
 }

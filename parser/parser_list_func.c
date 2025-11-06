@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_list_func.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:39:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/08/20 14:22:13 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/05 16:24:23 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_parser	*create_node_p(void)
 		return (NULL);
 	node->redirections = NULL;
 	node->words = NULL;
+	node->heredoc = NULL;
 	node->next = NULL;
 	return (node);
 }

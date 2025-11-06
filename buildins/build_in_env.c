@@ -6,13 +6,13 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:24:19 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/22 14:03:58 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:40:35 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-void build_in_env(char **envp)
+int build_in_env(char **envp)
 {
 	int i = 0;
 
@@ -21,4 +21,5 @@ void build_in_env(char **envp)
 		printf("%s\n", envp[i]);
 		i++;
 	}
+	return (0);
 }
