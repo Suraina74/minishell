@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 14:20:41 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 17:18:35 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,14 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	*cmd_struct = tmp;
 }
 
-void	fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp)
+void	fd_outs(t_utils_pipe *pipe_hand, t_parser *parser)
 {
+	t_parser *tmp;
+
+	tmp = parser;
 	if (tmp->redirections->token == OUT)
 	{
-		tmp->redirections = tmp->redirections->next;
-		pipe_hand->fd_out = open(tmp->redirections->word,
+		pipe_hand->fd_out = open(tmp->redirections->next->word,
 				O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
 		{
@@ -43,8 +45,7 @@ void	fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp)
 	}
 	if (tmp->redirections->token == OUTOUT)
 	{
-		tmp->redirections = tmp->redirections->next;
-		pipe_hand->fd_out = open(tmp->redirections->word,
+		pipe_hand->fd_out = open(tmp->redirections->next->word,
 				O_CREAT | O_APPEND | O_WRONLY, 0644);
 		if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
 		{
@@ -54,15 +55,17 @@ void	fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp)
 	}
 }
 
-void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp)
+void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *parser)
 {
+	t_parser *tmp;
+	
+	tmp = parser;
 	if (tmp->redirections)
 	{
 		fd_outs(pipe_hand, tmp);
 		if (tmp->redirections->token == IN)
 		{
-			tmp->redirections = tmp->redirections->next;
-			pipe_hand->fd_in = open(tmp->redirections->word, O_RDONLY);
+			pipe_hand->fd_in = open(tmp->redirections->next->word, O_RDONLY);
 			if (dup2(pipe_hand->fd_in, STDIN_FILENO) == -1)
 			{
 				perror("dup2");
@@ -76,4 +79,5 @@ void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp)
 			heredoc_start(tmp, pipe_hand);
 		}
 	}
+	tmp = parser;
 }

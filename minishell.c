@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/05 18:14:56 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 17:00:49 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	free_list_p(t_parser *parser_list)
 			i++;
 		}
 		free(parser_list->words);
+		free_list_l(parser_list->redirections);
 		temp = parser_list;
 		parser_list = parser_list->next;
 		free(temp);
