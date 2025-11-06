@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 17:52:32 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 18:06:54 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ int execute_buildin(t_parser *parser_list, char **envp)
 	t_parser	*tmp;
 
 	tmp = parser_list;
-	if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0)
+	if (tmp->words[0] == NULL)
+		return (1);
+	else if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0)
 		return (build_in_echo(tmp->words));
 	else if ((ft_strncmp(tmp->words[0], "cd", 2)) == 0)
 		return (build_in_cd(tmp->words));
@@ -39,7 +41,9 @@ int	build_in_flag(t_parser *parser_list)
 	t_parser	*tmp;
 
 	tmp = parser_list;
-	if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0)
+	if (tmp->words[0] == NULL)
+		return (1);
+	else if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0)
 		return (1);
 	else if ((ft_strncmp(tmp->words[0], "cd", 2)) == 0)
 		return (1);
