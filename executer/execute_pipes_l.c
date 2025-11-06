@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 16:51:18 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/06 17:52:46 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,11 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 			execute_buildin(tmp, envp);
 		else
 			execute_fun(tmp, envp);
-		// free_list_p(tmp);
 		exit(0);
 	}
 	else if (pipe_hand->child_proc == -1)
 	{
 		perror("fork");
-		// free_list_p(tmp);
 		exit(EXIT_FAILURE);
 	}
 	close(pipe_hand->fd[1]);
