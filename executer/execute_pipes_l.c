@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 17:52:46 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/07 12:35:59 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 	if (tmp == NULL)
 	{
 		free(pipe_hand);
-		return (NULL);
+		return (envp);
 	}
 	if (build_in_flag(tmp) && tmp->next == NULL)
 	{
