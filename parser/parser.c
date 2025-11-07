@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:16:32 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/06 17:47:22 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/07 16:33:36 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ t_parser	*parsing(char *string, char **envp)
 	lexer_list = lexing(string);
 	if (lexer_list == NULL)
 		return (NULL);
+	if (lexer_list->token == PIPE)
+	{
+		write(2, "Syntax error!\n", 14);
+		free_list_l(lexer_list);
+		return (NULL);
+	}
 	temp = lexer_list;
 	node = create_node_p();
 	node->nbr_red = 0;
