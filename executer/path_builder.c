@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 09:29:27 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 15:32:58 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:15:36 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	**x_path(char **envp, char *command)
 	char	**result;
 	char	*full_path;
 
-	if (command[0] == ' ')
+	if (command[0] == ' ' || command[0] == '\0')
 	{
 		ft_putstr_fd(command, 2);
 		ft_putendl_fd(": command not found", 2);
