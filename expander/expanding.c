@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expanding.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/01 14:16:20 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/07 16:50:38 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,38 +18,53 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 	char	*exp_var;
 	int		i;
 	int		j;
-	int		len = 0;
+	int		len_after_equal;
+	size_t	len_before_equal;
 
-	var = ft_substr(word, start, len_var);
 	i = 0;
+	exp_var = NULL;
+	len_before_equal = 0;
+	len_after_equal = 0;
+	var = ft_substr(word, start, len_var);
 	if (var == NULL)
 		return (NULL);
 	while (envp[i])
 	{
 		if ((ft_strncmp(envp[i], var, ft_strlen(var))) == 0)
 		{
+			while (envp[i][len_before_equal] && envp[i][len_before_equal] != '=')
+				len_before_equal++;
+			if (len_before_equal != ft_strlen(var))
+			{
+				free(var);
+				return (NULL);
+			}
 			j = 0;
 			while (envp[i][j])
 			{
 				if (envp[i][j] == '=')
 				{
-					len = 0;
 					j++;
 					while (envp[i][j])
 					{
-						len++;
+						len_after_equal++;
 						j++;
 					}
 				}
-				j++;			
+				if (len_after_equal != 0)
+					break ;
+				j++;
 			}
-			break ;
+			if (len_after_equal != 0)
+				break ;
 		}
 		i++;
 	}
-	exp_var = (char *) malloc(len + 1);
-	if (exp_var == NULL)
+	if (len_after_equal == 0)
+	{
+		free(var);
 		return (NULL);
+	}
 	i = 0;
 	while (envp[i])
 	{
@@ -61,7 +76,7 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 				if (envp[i][j] == '=')
 				{
 					j++;
-					exp_var = ft_substr(envp[i], j, len);
+					exp_var = ft_substr(envp[i], j, len_after_equal);
 				}
 				j++;			
 			}
