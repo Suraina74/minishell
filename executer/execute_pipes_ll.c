@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_ll.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 12:34:43 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:52:31 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	if (!tmp)
 		return ;
 	tmp->command = NULL;
-	tmp->exit_stat = -1;
 	tmp->fd_in = -1;
 	tmp->fd_out = -1;
 	tmp->next = NULL;

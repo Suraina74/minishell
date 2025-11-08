@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 13:43:13 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:52:29 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ typedef struct s_utils_pipe
 	int					fd[2];
 	int					fd_out;
 	int					fd_in;
-	int					exit_stat;
 	pid_t				child_proc;
 	struct s_utils_pipe	*next;
 }						t_utils_pipe;
@@ -68,7 +67,7 @@ void					close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
 							int *prev_in, int fd[2]);
 void					ft_free_path(char **arr);
 char					**x_path(char **envp, char *command);
-char					**execute_pipes(t_parser *parser_list, char **envp);
+int						execute_pipes(t_parser *parser_list, char **envp);
 int						check_input(char *string);
 int						word_count(char *s, char c);
 char					**mini_split(char *s, char c);

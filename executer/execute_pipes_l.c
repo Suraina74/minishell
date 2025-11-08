@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 13:47:19 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:50:33 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 	*prev_in = pipe_hand->fd[0];
 }
 
-char	**execute_pipes(t_parser *parser_list, char **envp)
+int	execute_pipes(t_parser *parser_list, char **envp)
 {
 	t_parser		*tmp;
 	t_utils_pipe	*current;
@@ -78,7 +78,9 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 	int				prev_in;
 	int				saved_in;
 	int				saved_out;
+	int				exit_stat;
 
+	exit_stat = -1;
 	prev_in = -1;
 	tmp = parser_list;
 	saved_in = dup(STDIN_FILENO);
@@ -87,14 +89,14 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 	if (tmp == NULL)
 	{
 		free(pipe_hand);
-		return (envp);
+		return (exit_stat);
 	}
 	if (build_in_flag(tmp) && tmp->next == NULL)
 	{
 		start_is_fd(pipe_hand, tmp);
 		execute_buildin(tmp, envp);
 		free(pipe_hand);
-		return (envp);
+		return (exit_stat);
 	}
 	else
 	{
@@ -105,15 +107,15 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 			tmp = tmp->next;
 		}
 		current = pipe_hand;
-		waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
-		while (waitpid(-1, &pipe_hand->exit_stat, 0) > 0)
+		waitpid(current->child_proc, &exit_stat, 0);
+		while (waitpid(-1, &exit_stat, 0) > 0)
 			;
-		WEXITSTATUS(pipe_hand->exit_stat);
+		WEXITSTATUS(exit_stat);
 	}
 	dup2(saved_in, STDIN_FILENO);
 	dup2(saved_out, STDOUT_FILENO);
 	close(saved_in);
 	close(saved_out);
 	free(pipe_hand);
-	return (envp);
+	return (exit_stat);
 }
