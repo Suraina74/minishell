@@ -6,55 +6,11 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 12:45:08 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:36:04 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in,
-		int fd[2])
-{
-	if (pipe_hand->child_proc > 0)
-	{
-		if (*prev_in != -1)
-			close(*prev_in);
-		if (tmp->next != NULL)
-		{
-			*prev_in = fd[FD_READ];
-			close(fd[FD_WRITE]);
-		}
-		else
-		{
-			close(fd[FD_READ]);
-			close(fd[FD_WRITE]);
-			*prev_in = -1;
-		}
-	}
-}
-
-void	get_prev_pipe(t_utils_pipe *pipe_hand, t_parser *tmp, int *prev_in)
-{
-	if (*prev_in != -1)
-	{
-		if (dup2(*prev_in, STDIN_FILENO) == -1)
-		{
-			perror("dup2");
-			close(*prev_in);
-		}
-		close(*prev_in);
-	}
-	if (tmp->next != NULL)
-	{
-		close(pipe_hand->fd[FD_READ]);
-		if (dup2(pipe_hand->fd[FD_WRITE], STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			close(pipe_hand->fd[FD_WRITE]);
-		}
-		close(pipe_hand->fd[FD_WRITE]);
-	}
-}
 
 void	init_pipe(t_utils_pipe *pipe_hand)
 {
@@ -65,21 +21,38 @@ void	init_pipe(t_utils_pipe *pipe_hand)
 	}
 }
 
+void	get_prev_pipe(t_utils_pipe *pipe_hand, t_parser *tmp, int *prev_in)
+{
+	if (*prev_in != -1)
+	{
+		if (dup2(*prev_in, STDIN_FILENO) == -1)
+		{
+			close(*prev_in);
+			exit(1);
+		}
+	}
+	if (tmp->next != NULL)
+	{
+		if (dup2(pipe_hand->fd[1], STDOUT_FILENO) == -1)
+		{
+			close(pipe_hand->fd[1]);
+			exit(1);
+		}
+	}
+	start_is_fd(pipe_hand, tmp);
+	close(pipe_hand->fd[0]);
+	close(pipe_hand->fd[1]);
+	if (*prev_in != -1)
+		close(*prev_in);
+}
+
 void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 		char **envp)
 {
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
-		if (*prev_in != -1)
-			dup2(*prev_in, STDIN_FILENO);
-		if (tmp->next != NULL)
-			dup2(pipe_hand->fd[1], STDOUT_FILENO);
-		start_is_fd(pipe_hand, tmp);
-		close(pipe_hand->fd[0]);
-		close(pipe_hand->fd[1]);
-		if (*prev_in != -1)
-			close(*prev_in);
+		get_prev_pipe(pipe_hand, tmp, prev_in);
 		if (build_in_flag(tmp))
 			execute_buildin(tmp, envp);
 		else
@@ -96,7 +69,6 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 		close(*prev_in);
 	*prev_in = pipe_hand->fd[0];
 }
-
 
 char	**execute_pipes(t_parser *parser_list, char **envp)
 {
@@ -133,12 +105,8 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 		}
 		current = pipe_hand;
 		waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
-		while (waitpid(-1, &pipe_hand->exit_stat, 0) > 0);
-		// while (current)
-		// {
-		// 	waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
-		// 	current = current->next;
-		// }
+		while (waitpid(-1, &pipe_hand->exit_stat, 0) > 0)
+			;
 		WEXITSTATUS(pipe_hand->exit_stat);
 	}
 	dup2(saved_in, STDIN_FILENO);
