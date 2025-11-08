@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/08 14:50:51 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:53:52 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	main(int ac, char **av, char **envp)
 	{
 		rl = readline("minishell > ");
 		parser_list = parsing(rl, envp);
-		execute_pipes(parser_list, envp);
+		execute_pipes(parser_list, &envp);
 		if (rl[0] != '\0')
 			add_history(rl);
 		free(rl);

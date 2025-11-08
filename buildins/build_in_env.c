@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:24:19 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 13:40:35 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:57:45 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int build_in_env(char **envp)
+int build_in_env(char ***envp)
 {
 	int i = 0;
 
-	while (envp[i])
+	while (*envp[i])
 	{
-		printf("%s\n", envp[i]);
+		printf("%s\n", *envp[i]);
 		i++;
 	}
 	return (0);

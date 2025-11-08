@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 14:50:33 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:56:08 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	get_prev_pipe(t_utils_pipe *pipe_hand, t_parser *tmp, int *prev_in)
 }
 
 void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
-		char **envp)
+		char ***envp)
 {
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
@@ -70,7 +70,7 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 	*prev_in = pipe_hand->fd[0];
 }
 
-int	execute_pipes(t_parser *parser_list, char **envp)
+int	execute_pipes(t_parser *parser_list, char ***envp)
 {
 	t_parser		*tmp;
 	t_utils_pipe	*current;

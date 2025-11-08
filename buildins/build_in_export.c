@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/07 16:52:17 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 15:04:29 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 // 	return (envp_new);
 // }
 
-char **build_in_export(t_parser *parser_list, char **envp)
+int	build_in_export(t_parser *parser_list, char ***envp)
 {
 	size_t		i;
 	size_t		j;
@@ -54,18 +54,18 @@ char **build_in_export(t_parser *parser_list, char **envp)
 	// alleen export, zonder iets erachter.
     if (words_in_node == 1)
     {
-        while (envp[i])
+        while (*envp[i])
 	    {
-		    printf("%s\n", envp[i]);
+		    printf("%s\n", *envp[i]);
             i++;
 	    }
-        return (envp);
+        return (0);
     }
 	// envp_new = replace_var(parser_list, envp);
 	// if (envp_new == NULL)
 	// // 	functie om new_envp aan te maken met nieuwe var(s) aan het eind
 	// Als envp_new != NULL, dan de existing var(skippen), bij het maken van de new_envp. De var_count wordt dan ook anders.
-	while (envp[var_count])
+	while ((*envp)[var_count])
 		var_count++;
 	// Kijken of wat er in de node zit niet al een bestaande variable is. 
 	// Als dat niet zo is, dan envp_new aanmaken en aan het eind de variable toevoegen.
@@ -73,11 +73,11 @@ char **build_in_export(t_parser *parser_list, char **envp)
 	// Alles kopieren van envp, alleen op de plek van de aan te passen var iets anders neerzetten dan originele envp.
     envp_new = (char **) malloc((words_in_node + var_count + 1) * sizeof (char *));
 	if (envp_new == NULL)
-		return (NULL);
+		return (1);
 	i = 0;
-	while (envp[i])
+	while ((*envp)[i])
 	{
-		envp_new[i] = ft_strdup(envp[i]);
+		envp_new[i] = ft_strdup((*envp)[i]);
 		i++;
 	}
 	while (tmp->words[j])
@@ -87,6 +87,7 @@ char **build_in_export(t_parser *parser_list, char **envp)
 		j++;
 	}
 	envp_new[i] = NULL;
-	return (envp_new);
+	*envp = envp_new;
+	return (0);
 	// envp aanpassen zodat het al bestaande var's vervangt.
 }

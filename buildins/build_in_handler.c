@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 14:07:03 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:55:03 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int execute_buildin(t_parser *parser_list, char **envp)
+int execute_buildin(t_parser *parser_list, char ***envp)
 {
 	t_parser	*tmp;
 
@@ -26,7 +26,7 @@ int execute_buildin(t_parser *parser_list, char **envp)
 	else if ((ft_strncmp(tmp->words[0], "pwd", 3)) == 0)
 		return (build_in_pwd());
 	else if ((ft_strncmp(tmp->words[0], "export", 6)) == 0)
-		envp = build_in_export(tmp, envp);
+		return (build_in_export(tmp, envp));
 	else if ((ft_strncmp(tmp->words[0], "unset", 5)) == 0)
 		return (printf("unset goes here!\n"));
 	else if ((ft_strncmp(tmp->words[0], "env", 3)) == 0)

@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 14:52:29 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:59:33 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void					close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
 							int *prev_in, int fd[2]);
 void					ft_free_path(char **arr);
 char					**x_path(char **envp, char *command);
-int						execute_pipes(t_parser *parser_list, char **envp);
+int						execute_pipes(t_parser *parser_list, char ***envp);
 int						check_input(char *string);
 int						word_count(char *s, char c);
 char					**mini_split(char *s, char c);
@@ -96,17 +96,17 @@ void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
 t_lexer					*expander(t_lexer *lexer_list, char **envp);
 size_t					len_without_empty_strings(char *word);
 // char					**execute_buildin(t_parser *parser_list, char **envp);
-int						execute_buildin(t_parser *parser_list, char **envp);
+int						execute_buildin(t_parser *parser_list, char ***envp);
 int						build_in_echo(char **d2_wds);
 int						build_in_cd(char **path);
 int						build_in_pwd(void);
 int						build_in_exit(t_parser *parser_list);
-char					**build_in_export(t_parser *parser_list, char **envp);
-int						build_in_env(char **envp);
+int						build_in_export(t_parser *parser_list, char ***envp);
+int						build_in_env(char ***envp);
 int						build_in_flag(t_parser *parser_list);
-void					execute_fun(t_parser *tmp, char **envp);
+void					execute_fun(t_parser *tmp, char ***envp);
 void					init_child_proc(t_parser *tmp, int *prev_in,
-							t_utils_pipe *pipe_hand, char **envp);
+							t_utils_pipe *pipe_hand, char ***envp);
 void					init_cmd(t_utils_pipe **cmd_struct);
 void					heredoc_start(t_parser *parsing,
 							t_utils_pipe *pipe_hand);
