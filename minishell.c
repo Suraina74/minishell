@@ -3,45 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/08 12:36:42 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:43:42 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-void	free_list_l(t_lexer *lexer_list)
+void	free_list_l(t_lexer **lexer_list)
 {
 	t_lexer	*temp;
 
-	while (lexer_list)
+	while (*lexer_list)
 	{
-		temp = lexer_list;
+		temp = *lexer_list;
 		free(temp->word);
-		lexer_list = lexer_list->next;
+		*lexer_list = (*lexer_list)->next;
 		free(temp);
 	}
 }
 
-void	free_list_p(t_parser *parser_list)
+void	free_list_p(t_parser **parser_list)
 {
 	t_parser	*temp;
 	int			i;
 
-	while (parser_list)
+	while (*parser_list)
 	{
 		i = 0;
-		while (parser_list->words[i])
+		temp = *parser_list;
+		while (temp->words[i])
 		{
-			free(parser_list->words[i]);
+			free(temp->words[i]);
 			i++;
 		}
-		free(parser_list->words);
-		free_list_l(parser_list->redirections);
-		temp = parser_list;
-		parser_list = parser_list->next;
+		free(temp->words);
+		free_list_l(&temp->redirections);
+		*parser_list = (*parser_list)->next;
 		free(temp);
 	}
 }
@@ -61,7 +61,7 @@ int	main(int ac, char **av, char **envp)
 		if (rl[0] != '\0')
 			add_history(rl);
 		free(rl);
-		free_list_p(parser_list);
+		free_list_p(&parser_list);
 	}
 	return (0);
 }

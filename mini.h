@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 13:43:49 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:43:13 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ t_parser				*parsing(char *string, char **envp);
 t_parser				*create_node_p(void);
 t_parser				*last_node_p(t_parser *parser_list);
 void					add_to_end_p(t_parser **parser_list, t_parser *node);
-void					free_list_l(t_lexer *lexer_list);
-void					free_list_p(t_parser *parser_list);
+void					free_list_l(t_lexer **lexer_list);
+void					free_list_p(t_parser **parser_list);
 t_lexer					*del_empty_strings(t_lexer *lexer_list);
 t_lexer					*red_at_end_of_list(t_lexer *lexer_list,
 							int redirection_pos);

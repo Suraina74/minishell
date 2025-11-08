@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:47 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 13:43:36 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:43:07 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	build_in_exit(t_parser *parser_list)
 {
-	free_list_p(parser_list);
+	free_list_p(&parser_list);
 	exit(1);
 	return (0);
 }

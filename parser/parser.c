@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:16:32 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/07 16:33:36 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:43:55 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_parser	*parsing(char *string, char **envp)
 	if (lexer_list->token == PIPE)
 	{
 		write(2, "Syntax error!\n", 14);
-		free_list_l(lexer_list);
+		free_list_l(&lexer_list);
 		return (NULL);
 	}
 	temp = lexer_list;
@@ -85,7 +85,7 @@ t_parser	*parsing(char *string, char **envp)
 	}
 	lexer_list = expander(lexer_list, envp);
 	parser_list = create_2d_array_per_node(parser_list, lexer_list);
-	free_list_l(lexer_list);
+	free_list_l(&lexer_list);
 	return (parser_list);
 }
 	

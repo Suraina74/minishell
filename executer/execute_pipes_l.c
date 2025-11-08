@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 13:36:04 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 13:47:19 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 	{
 		start_is_fd(pipe_hand, tmp);
 		execute_buildin(tmp, envp);
+		free(pipe_hand);
 		return (envp);
 	}
 	else
