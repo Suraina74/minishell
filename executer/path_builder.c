@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 09:29:27 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/07 17:15:36 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 14:42:10 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,12 @@ char	**x_path(char **envp, char *command)
 		return (free(result), NULL);
 	full_path = get_full_path(envp, result[0]);
 	if (full_path == NULL)
+		return (ft_free_path(result), NULL);
+	if ((access(full_path, X_OK) == -1) || (access(full_path, F_OK) == -1))
 	{
-		ft_free_path(result);
-		return (NULL);
+		ft_putstr_fd(command, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		exit(EXIT_FAILURE);
 	}
 	free(result[0]);
 	result[0] = full_path;
