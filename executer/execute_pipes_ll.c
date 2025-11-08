@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/06 17:18:35 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 12:34:43 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,41 +28,33 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	*cmd_struct = tmp;
 }
 
-void	fd_outs(t_utils_pipe *pipe_hand, t_parser *parser)
-{
-	t_parser *tmp;
-
-	tmp = parser;
-	if (tmp->redirections->token == OUT)
-	{
-		pipe_hand->fd_out = open(tmp->redirections->next->word,
-				O_CREAT | O_TRUNC | O_WRONLY, 0644);
-		if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
-		{
-			perror("Dup2");
-		}
-		close(pipe_hand->fd_out);
-	}
-	if (tmp->redirections->token == OUTOUT)
-	{
-		pipe_hand->fd_out = open(tmp->redirections->next->word,
-				O_CREAT | O_APPEND | O_WRONLY, 0644);
-		if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
-		{
-			perror("Dup2");
-		}
-		close(pipe_hand->fd_out);
-	}
-}
-
 void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *parser)
 {
-	t_parser *tmp;
-	
+	t_parser	*tmp;
+
 	tmp = parser;
-	if (tmp->redirections)
+	while (tmp->redirections)
 	{
-		fd_outs(pipe_hand, tmp);
+		if (tmp->redirections->token == OUT)
+		{
+			pipe_hand->fd_out = open(tmp->redirections->next->word,
+					O_CREAT | O_TRUNC | O_WRONLY, 0644);
+			if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
+			{
+				perror("Dup2");
+			}
+			close(pipe_hand->fd_out);
+		}
+		if (tmp->redirections->token == OUTOUT)
+		{
+			pipe_hand->fd_out = open(tmp->redirections->next->word,
+					O_CREAT | O_APPEND | O_WRONLY, 0644);
+			if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
+			{
+				perror("Dup2");
+			}
+			close(pipe_hand->fd_out);
+		}
 		if (tmp->redirections->token == IN)
 		{
 			pipe_hand->fd_in = open(tmp->redirections->next->word, O_RDONLY);
@@ -78,6 +70,7 @@ void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *parser)
 			pipe_hand->fd_in = 0;
 			heredoc_start(tmp, pipe_hand);
 		}
+		tmp->redirections = tmp->redirections->next;
 	}
 	tmp = parser;
 }

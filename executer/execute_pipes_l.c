@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/07 16:57:22 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/08 12:45:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,11 +132,13 @@ char	**execute_pipes(t_parser *parser_list, char **envp)
 			tmp = tmp->next;
 		}
 		current = pipe_hand;
-		while (current)
-		{
-			waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
-			current = current->next;
-		}
+		waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
+		while (waitpid(-1, &pipe_hand->exit_stat, 0) > 0);
+		// while (current)
+		// {
+		// 	waitpid(current->child_proc, &pipe_hand->exit_stat, 0);
+		// 	current = current->next;
+		// }
 		WEXITSTATUS(pipe_hand->exit_stat);
 	}
 	dup2(saved_in, STDIN_FILENO);
