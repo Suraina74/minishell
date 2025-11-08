@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 13:16:32 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/08 13:43:55 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/08 15:32:04 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,15 @@ t_parser	*parsing(char *string, char **envp)
 	lexer_list = lexing(string);
 	if (lexer_list == NULL)
 		return (NULL);
-	if (lexer_list->token == PIPE)
+	if ((lexer_list->token == PIPE) || (lexer_list->token == OUT && lexer_list->next == NULL) || (lexer_list->token == IN && lexer_list->next == NULL))
 	{
-		write(2, "Syntax error!\n", 14);
+		ft_putendl_fd("Parsing error!", 2);
+		free_list_l(&lexer_list);
+		return (NULL);
+	}
+	if ((lexer_list->token == OUT || lexer_list->token == IN || lexer_list->token == ININ || lexer_list->token == OUTOUT) && lexer_list->next == NULL)
+	{
+		ft_putendl_fd("Parsing error!", 2);
 		free_list_l(&lexer_list);
 		return (NULL);
 	}
@@ -41,8 +47,11 @@ t_parser	*parsing(char *string, char **envp)
 		{
 			if (temp->pos == 0)
 			{
-				// if temp->next is een token. Dus if temp->next->token != -1,
-				// dan een error. (iets als: < < infile > outfile)
+				if (temp->next->token >= 0 && temp->next->token <=4)
+				{
+					ft_putendl_fd("Parsing error!", 2);
+					return (NULL);
+				}
 				lexer_list = lexer_list->next->next;
 				add_to_end_l(&node->redirections, temp);
 				node->nbr_red++;
