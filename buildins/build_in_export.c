@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 15:04:29 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:13:13 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	// alleen export, zonder iets erachter.
     if (words_in_node == 1)
     {
-        while (*envp[i])
+        while ((*envp)[i])
 	    {
-		    printf("%s\n", *envp[i]);
+		    printf("%s\n", (*envp)[i]);
             i++;
 	    }
         return (0);
