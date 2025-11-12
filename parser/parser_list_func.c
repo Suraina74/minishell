@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:39:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 12:01:50 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 14:04:58 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ t_lexer	*create_node_red()
 	if (node == NULL)
 		return (NULL);
 	node->word = NULL;
-	node->token = INVALID;
-	node->pos = 0; //Eruit gooien?
+	node->token = DISUSE;
 	node->next = NULL;
 	return (node);
 }
