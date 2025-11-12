@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 10:00:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/08 15:37:25 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 14:07:44 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,10 @@ t_lexer	*lexing(char *string)
 	}
 	temp = lexer_list;
 	i = 0;
-	temp->pos = i;
 	while (temp->next)
 	{
 		temp = temp->next;
 		i++;
-		temp->pos = i;
 	}
 	i = 0;
 	while (split_str[i])

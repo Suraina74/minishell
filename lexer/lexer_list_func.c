@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_list_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 11:35:10 by schabboe          #+#    #+#             */
-/*   Updated: 2025/10/22 21:46:27 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/12 14:08:38 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ t_lexer	*create_node_l(char *string)
 	if (node == NULL)
 		return (NULL);
 	node->word = NULL;
-	node->token = -1;
-	node->pos = 0;
+	node->token = DISUSE;
 	if (ft_strlen(string) == 1 && string[0] == '<')
 		node->token = IN;
 	else if (ft_strlen(string) == 1 && string[0] == '>')

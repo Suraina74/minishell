@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_list_func.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:39:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/05 16:24:23 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/12 14:04:58 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,20 @@ t_parser	*create_node_p(void)
 	node->redirections = NULL;
 	node->words = NULL;
 	node->heredoc = NULL;
+	node->next = NULL;
+	node->nbr_red = 0;
+	return (node);
+}
+
+t_lexer	*create_node_red()
+{
+	t_lexer	*node;
+
+	node = (t_lexer *) malloc(sizeof(t_lexer));
+	if (node == NULL)
+		return (NULL);
+	node->word = NULL;
+	node->token = DISUSE;
 	node->next = NULL;
 	return (node);
 }

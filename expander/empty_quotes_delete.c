@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 12:47:38 by schabboe          #+#    #+#             */
-/*   Updated: 2025/10/22 14:57:16 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 13:03:26 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,14 @@ t_lexer	*del_empty_strings(t_lexer *lexer_list)
 	temp = lexer_list;
 	while (temp)
 	{
-		if (temp->token == IN || temp->token == OUT || temp->token == ININ || temp->token == OUTOUT || temp->token == PIPE)
+		if (temp->token == PIPE)
 			temp = temp->next;
-		len = len_without_empty_strings(temp->word);
-		if (len != ft_strlen(temp->word))
-			temp->word = string_without_empty_quotes(temp->word, len);
+		if (temp->word != NULL)
+		{
+			len = len_without_empty_strings(temp->word);
+			if (len != ft_strlen(temp->word))
+				temp->word = string_without_empty_quotes(temp->word, len);
+		}
 		temp = temp->next;
 	}
 	return (lexer_list);

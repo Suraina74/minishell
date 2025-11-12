@@ -1,12 +1,12 @@
 NAME = minishell
 CC = cc
 SRCS = minishell.c lexer/lexer.c lexer/mini_split.c lexer/lexer_list_func.c parser/parser.c \
-parser/parser_list_func.c parser/manipulate_lexer_list.c parser/manipulate_parser_list.c \
+parser/parser_list_func.c parser/manipulate_parser_list.c \
 executer/exe_cmd.c executer/execute_pipes_l.c executer/execute_pipes_ll.c executer/path_builder.c expander/expanding.c \
 expander/empty_quotes_delete.c expander/empty_quotes_len.c \
 executer/executer_utils.c buildins/build_in_handler.c \
 buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins/build_in_env.c \
- buildins/build_in_exit.c buildins/build_in_export.c buildins/build_in_unset.c executer/heredoc.c
+buildins/build_in_exit.c buildins/build_in_export.c buildins/build_in_unset.c executer/heredoc.c
 
 CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 LIBFT_DIR = ./libft

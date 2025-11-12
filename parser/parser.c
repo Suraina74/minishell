@@ -5,19 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 13:16:32 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/08 15:32:04 by schabboe         ###   ########.fr       */
+/*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
+/*   Updated: 2025/11/12 14:09:32 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-t_parser	*parsing(char *string, char **envp)
+t_parser *parsing(char *string, char **envp)
 {
 	t_lexer		*lexer_list;
 	t_lexer		*temp;
 	t_parser	*parser_list;
 	t_parser	*node;
+	t_lexer		*node_red;
 	int			nbr_commands_and_pipes;
 
 	parser_list = NULL;
@@ -25,57 +26,31 @@ t_parser	*parsing(char *string, char **envp)
 	lexer_list = lexing(string);
 	if (lexer_list == NULL)
 		return (NULL);
-	if ((lexer_list->token == PIPE) || (lexer_list->token == OUT && lexer_list->next == NULL) || (lexer_list->token == IN && lexer_list->next == NULL))
-	{
-		ft_putendl_fd("Parsing error!", 2);
-		free_list_l(&lexer_list);
-		return (NULL);
-	}
-	if ((lexer_list->token == OUT || lexer_list->token == IN || lexer_list->token == ININ || lexer_list->token == OUTOUT) && lexer_list->next == NULL)
-	{
-		ft_putendl_fd("Parsing error!", 2);
-		free_list_l(&lexer_list);
-		return (NULL);
-	}
 	temp = lexer_list;
 	node = create_node_p();
-	node->nbr_red = 0;
 	add_to_end_p(&parser_list, node);
 	while (temp != NULL)
 	{
 		if (temp->token == IN || temp->token == OUT || temp->token == ININ || temp->token == OUTOUT)
 		{
-			if (temp->pos == 0)
+			if ((temp->next == NULL) || (temp->next->word == NULL))
 			{
-				if (temp->next->token >= 0 && temp->next->token <=4)
-				{
-					ft_putendl_fd("Parsing error!", 2);
-					return (NULL);
-				}
-				lexer_list = lexer_list->next->next;
-				add_to_end_l(&node->redirections, temp);
-				node->nbr_red++;
-				node->redirections = redirection_cutoff(node);
-				temp = temp_cutoff(lexer_list, nbr_commands_and_pipes);
+				free_list_l(&lexer_list);
+				return (NULL);
 			}
-			else if (temp->next->next == NULL)
-			{
-				lexer_list = red_at_end_of_list(lexer_list, temp->pos);
-				add_to_end_l(&node->redirections, temp);
-				node->nbr_red++;
-				node->redirections = redirection_cutoff(node);
-				temp = NULL;
-			}
-			// else if (temp->next == NULL)
-			// Als er geen file komt na een token, dan een error.
-			// (iets als: > infile > outfile >)
 			else
 			{
-				lexer_list = red_middle_of_list(lexer_list, temp->pos);
-				add_to_end_l(&node->redirections, temp);
-				node->nbr_red++;
-				node->redirections = redirection_cutoff(node);
-				temp = temp_cutoff(lexer_list, nbr_commands_and_pipes);
+				node_red = create_node_red();
+				node_red->token = temp->token;
+				add_to_end_l(&node->redirections, node_red);
+				temp->token = DISUSE;
+				temp = temp->next;
+				node_red = create_node_red();
+				node_red->word = ft_strdup(temp->word);
+				add_to_end_l(&node->redirections, node_red);
+				free (temp->word);
+				temp->word = NULL;
+				temp = temp->next;
 			}
 		}
 		else if (temp->token == PIPE)
@@ -97,4 +72,3 @@ t_parser	*parsing(char *string, char **envp)
 	free_list_l(&lexer_list);
 	return (parser_list);
 }
-	

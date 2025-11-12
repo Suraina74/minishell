@@ -1,1 +1,0 @@
-makes splitted cmd's one based on where the token is

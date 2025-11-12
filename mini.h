@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 12:11:38 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/12 14:14:27 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@
 
 typedef enum s_tokens
 {
-	IN,
-	OUT,
-	PIPE,
-	ININ,
-	OUTOUT
+	DISUSE = -1,
+	IN = 0,
+	OUT = 1,
+	PIPE = 2,
+	ININ = 3,
+	OUTOUT = 4
 }						t_tokens;
 
 typedef struct s_lexer
 {
 	char				*word;
 	t_tokens			token;
-	int					pos;
 	struct s_lexer		*next;
 }						t_lexer;
 
@@ -80,15 +80,10 @@ t_parser				*parsing(char *string, char **envp);
 t_parser				*create_node_p(void);
 t_parser				*last_node_p(t_parser *parser_list);
 void					add_to_end_p(t_parser **parser_list, t_parser *node);
+t_lexer					*create_node_red();
 void					free_list_l(t_lexer **lexer_list);
 void					free_list_p(t_parser **parser_list);
 t_lexer					*del_empty_strings(t_lexer *lexer_list);
-t_lexer					*red_at_end_of_list(t_lexer *lexer_list,
-							int redirection_pos);
-t_lexer					*red_middle_of_list(t_lexer *lexer_list,
-							int redirection_pos);
-t_lexer					*temp_cutoff(t_lexer *lexer, int nbr_cmds_and_pipes);
-t_lexer					*redirection_cutoff(t_parser *node);
 t_parser				*create_2d_array_per_node(t_parser *parser_list,
 							t_lexer *lexer_list);
 void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
