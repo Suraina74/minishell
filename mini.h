@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 14:59:33 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 12:01:43 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@
 
 typedef enum s_tokens
 {
-	IN,
-	OUT,
-	PIPE,
-	ININ,
-	OUTOUT
+	INVALID = -1,
+	IN = 0,
+	OUT = 1,
+	PIPE = 2,
+	ININ = 3,
+	OUTOUT = 4
 }						t_tokens;
 
 typedef struct s_lexer

@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:39:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 11:43:28 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 12:01:50 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@ t_parser	*create_node_p(void)
 	return (node);
 }
 
-t_lexer	*create_node_red(t_tokens token, char *file_name)
+t_lexer	*create_node_red()
 {
 	t_lexer	*node;
 
 	node = (t_lexer *) malloc(sizeof(t_lexer));
 	if (node == NULL)
 		return (NULL);
-	node->word = file_name;
-	node->token = token;
+	node->word = NULL;
+	node->token = INVALID;
 	node->pos = 0; //Eruit gooien?
 	node->next = NULL;
 	return (node);

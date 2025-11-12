@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 11:45:49 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 12:02:23 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,16 @@ t_parser *parsing(char *string, char **envp)
 				return (NULL);
 			else
 			{
-				node_red = create_node_red(temp->token, temp->next->word);
+				node_red = create_node_red();
+				node_red->token = temp->token;
 				add_to_end_p(&parser_list->redirections, node_red);
+				temp->token = INVALID;
+				temp = temp->next;
+				node_red = create_node_red();
+				node_red->word = temp->word;
+				add_to_end_p(&parser_list->redirections, node_red);
+				//lexer_list leegmaken.
+
 			}
 		}
 		else if (temp->word)
