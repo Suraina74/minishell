@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 14:14:27 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 18:42:34 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,6 @@ void					ft_free_path(char **arr);
 char					**x_path(char **envp, char *command);
 int						execute_pipes(t_parser *parser_list, char ***envp);
 int						check_input(char *string);
-int						word_count(char *s, char c);
-char					**mini_split(char *s, char c);
-void					*free_split(char **s, int j);
 t_lexer					*create_node_l(char *string);
 t_lexer					*last_node_l(t_lexer *lexer_list);
 void					add_to_end_l(t_lexer **lexer_list, t_lexer *node);

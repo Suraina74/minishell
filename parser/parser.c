@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 16:47:42 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 18:32:38 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_parser *parsing(char *string, char **envp)
 	parser_list = NULL;
 	nbr_commands_and_pipes = 0;
 	lexer_list = lexing(string);
-
 	if (lexer_list == NULL)
 		return (NULL);
 	temp = lexer_list;

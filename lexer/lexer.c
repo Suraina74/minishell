@@ -6,16 +6,11 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 10:00:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 14:07:44 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 19:05:22 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-// Er moet bij het parsen een linked list komen voor de redirections.
-// Per command een linked list.
-// Je kan namelijk meerdere redirections achter elkaar hebben.
-// Zoals ls > outfile1 > outfile2 > outfile3.
 
 int	check_input(char *string)
 {
@@ -52,15 +47,41 @@ int	check_input(char *string)
 	return (0);
 }
 
+int	quote_check(char *string, int i)
+{
+	if (string[i] == '\"')
+	{
+		i++;
+		while (string[i] != '\0')
+		{
+			if (string[i] == '\"')
+				break ;
+			i++;
+		}
+	}
+	else if (string[i] == '\'')
+	{
+		i++;
+		while (string[i] != '\0')
+		{
+			if (string[i] == '\'')
+				break ;
+			i++;
+		}
+	}
+	return (i);
+}
+
 t_lexer	*lexing(char *string)
 {
 	int			i;
-	char		**split_str;
 	t_lexer		*lexer_list;
 	t_lexer		*node;
-	t_lexer		*temp;
+	char		*part;
+	int			start;
 
 	i = 0;
+	start = 0;
 	lexer_list = NULL;
 	node = NULL;
 	if (string[0] == '\0')
@@ -75,29 +96,48 @@ t_lexer	*lexing(char *string)
 			return (NULL);
 		i++;
 	}
-	split_str = mini_split(string, ' ');
-	if (split_str == NULL)
-		return (NULL);
 	i = 0;
-	while (split_str[i])
+	while (string[i])
 	{
-		node = create_node_l(split_str[i]);
-		add_to_end_l(&lexer_list, node);
-		i++;
+		if (string[i] == '<' || string[i] == '>' || string[i] == '|')
+			if (string[i + 1] == '<' || string[i + 1] == '>')
+			{
+				part = ft_substr(string, i, 2);
+				node = create_node_l(part);
+				add_to_end_l(&lexer_list, node);
+				free (part);
+				i++;
+			}
+			else
+			{
+				part = ft_substr(string, i, 1);
+				node = create_node_l(part);
+				add_to_end_l(&lexer_list, node);
+				free (part);
+			}
+		else if (string[i] == ' ' && string[i+1] == ' ')
+			i++;
+		else
+		{
+			if (string[i] == ' ')
+				i++;
+			start = i;
+			i = quote_check(string, i);
+			while (string[i])
+			{
+				if (string[i] == '<' || string[i] == '>' || string[i] == '|' || string[i] == ' ')
+					break ;
+				if (string[i] != '\0')
+					i++;
+			}
+			i--;
+			part = ft_substr(string, start, (i + 1) - start);
+			node = create_node_l(part);
+			add_to_end_l(&lexer_list, node);
+			free (part);
+		}
+		if (string[i] != '\0')
+			i++;
 	}
-	temp = lexer_list;
-	i = 0;
-	while (temp->next)
-	{
-		temp = temp->next;
-		i++;
-	}
-	i = 0;
-	while (split_str[i])
-	{
-		free(split_str[i]);
-		i++;
-	}
-	free(split_str);
 	return (lexer_list);
 }
