@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 14:09:32 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:47:42 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,24 @@ t_parser *parsing(char *string, char **envp)
 	parser_list = NULL;
 	nbr_commands_and_pipes = 0;
 	lexer_list = lexing(string);
+
 	if (lexer_list == NULL)
 		return (NULL);
 	temp = lexer_list;
+	// PIPE woord erna en woord ervoor
+	// redirections must be followed by a word.
+	if (temp->token == PIPE)
+	{
+		ft_putendl_fd("syntax error near unexpected token `|'", 2);
+		free_list_l(&lexer_list);
+		return (NULL);
+	}
+	if (temp->token != -1 && (temp->next == NULL || temp->next->word == NULL))
+	{
+		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+		free_list_l(&lexer_list);
+		return (NULL);
+	}
 	node = create_node_p();
 	add_to_end_p(&parser_list, node);
 	while (temp != NULL)
@@ -36,6 +51,7 @@ t_parser *parsing(char *string, char **envp)
 			if ((temp->next == NULL) || (temp->next->word == NULL))
 			{
 				free_list_l(&lexer_list);
+				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 				return (NULL);
 			}
 			else
@@ -55,6 +71,18 @@ t_parser *parsing(char *string, char **envp)
 		}
 		else if (temp->token == PIPE)
 		{
+			if (temp->next == NULL)
+			{
+				ft_putendl_fd("syntax error near unexpected token `|'", 2);
+				free_list_l(&lexer_list);
+				return (NULL);
+			}
+			if (temp->next->word == NULL)
+			{
+				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+				free_list_l(&lexer_list);
+				return (NULL);
+			}
 			node = create_node_p();
 			node->nbr_red = 0;
 			add_to_end_p(&parser_list, node);

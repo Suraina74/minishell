@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 12:11:48 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/12 15:02:28 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ int	build_in_flag(t_parser *parser_list)
 	int			len;
 
 	tmp = parser_list;
-	len = ft_strlen(tmp->words[0]);
 	if (tmp->words[0] == NULL)
 		return (1);
-	else if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0 && (len == 4))
+	len = ft_strlen(tmp->words[0]);
+	if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0 && (len == 4))
 		return (1);
 	else if ((ft_strncmp(tmp->words[0], "cd", 2)) == 0 && (len == 2))
 		return (1);
