@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 14:59:33 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/12 12:11:38 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int						execute_buildin(t_parser *parser_list, char ***envp);
 int						build_in_echo(char **d2_wds);
 int						build_in_cd(char **path);
 int						build_in_pwd(void);
-int						build_in_exit(t_parser *parser_list);
+int						build_in_exit(int exit_stat, t_parser *parser_list);
 int						build_in_export(t_parser *parser_list, char ***envp);
 int						build_in_env(char ***envp);
 int						build_in_flag(t_parser *parser_list);

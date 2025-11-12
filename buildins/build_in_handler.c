@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/08 15:29:31 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/12 12:11:48 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	execute_buildin(t_parser *parser_list, char ***envp)
 {
 	t_parser	*tmp;
+	int exit_stat = 0;
 
 	tmp = parser_list;
 	if (tmp->words[0] == NULL)
@@ -32,7 +33,7 @@ int	execute_buildin(t_parser *parser_list, char ***envp)
 	else if ((ft_strncmp(tmp->words[0], "env", 3)) == 0)
 		return (build_in_env(envp));
 	else if ((ft_strncmp(tmp->words[0], "exit", 4)) == 0)
-		return (build_in_exit(tmp));
+		return (build_in_exit(exit_stat, tmp));
 	return (0);
 }
 
