@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 10:00:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 19:05:22 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 11:29:49 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,24 @@ t_lexer	*lexing(char *string)
 	i = 0;
 	while (string[i])
 	{
+		if (!(string[i] == '<' || string[i] == '>' || string[i] == '|' || string[i] == ' '))
+		{
+			start = i;
+			i = quote_check(string, i);
+			while (string[i])
+			{
+				if (string[i] == '<' || string[i] == '>' || string[i] == '|' || string[i] == ' ')
+					break ;
+				if (string[i] != '\0')
+					i++;
+			}
+			part = ft_substr(string, start, i - start);
+			node = create_node_l(part);
+			add_to_end_l(&lexer_list, node);
+			free (part);
+		}
 		if (string[i] == '<' || string[i] == '>' || string[i] == '|')
+		{
 			if (string[i + 1] == '<' || string[i + 1] == '>')
 			{
 				part = ft_substr(string, i, 2);
@@ -115,26 +132,6 @@ t_lexer	*lexing(char *string)
 				add_to_end_l(&lexer_list, node);
 				free (part);
 			}
-		else if (string[i] == ' ' && string[i+1] == ' ')
-			i++;
-		else
-		{
-			if (string[i] == ' ')
-				i++;
-			start = i;
-			i = quote_check(string, i);
-			while (string[i])
-			{
-				if (string[i] == '<' || string[i] == '>' || string[i] == '|' || string[i] == ' ')
-					break ;
-				if (string[i] != '\0')
-					i++;
-			}
-			i--;
-			part = ft_substr(string, start, (i + 1) - start);
-			node = create_node_l(part);
-			add_to_end_l(&lexer_list, node);
-			free (part);
 		}
 		if (string[i] != '\0')
 			i++;
