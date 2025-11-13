@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 18:42:34 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 12:47:52 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_lexer					*create_node_l(char *string);
 t_lexer					*last_node_l(t_lexer *lexer_list);
 void					add_to_end_l(t_lexer **lexer_list, t_lexer *node);
 t_lexer					*lexing(char *string);
-t_parser				*parsing(char *string, char **envp);
+t_parser				*parsing(char *string, char **envp, int exit_stat);
 t_parser				*create_node_p(void);
 t_parser				*last_node_p(t_parser *parser_list);
 void					add_to_end_p(t_parser **parser_list, t_parser *node);
@@ -85,7 +85,7 @@ t_parser				*create_2d_array_per_node(t_parser *parser_list,
 							t_lexer *lexer_list);
 void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
 void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
-t_lexer					*expander(t_lexer *lexer_list, char **envp);
+t_lexer					*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t					len_without_empty_strings(char *word);
 // char					**execute_buildin(t_parser *parser_list, char **envp);
 int						execute_buildin(t_parser *parser_list, char ***envp);

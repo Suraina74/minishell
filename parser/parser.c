@@ -6,13 +6,13 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 18:32:38 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 12:47:42 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-t_parser *parsing(char *string, char **envp)
+t_parser *parsing(char *string, char **envp, int exit_stat)
 {
 	t_lexer		*lexer_list;
 	t_lexer		*temp;
@@ -94,7 +94,7 @@ t_parser *parsing(char *string, char **envp)
 			nbr_commands_and_pipes++;
 		}
 	}
-	lexer_list = expander(lexer_list, envp);
+	lexer_list = expander(lexer_list, envp, exit_stat);
 	parser_list = create_2d_array_per_node(parser_list, lexer_list);
 	free_list_l(&lexer_list);
 	return (parser_list);

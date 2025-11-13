@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 13:25:06 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 14:03:02 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	execute_pipes(t_parser *parser_list, char ***envp)
 	int				saved_out;
 	int				exit_stat;
 
-	exit_stat = -1;
+	exit_stat = 0;
 	prev_in = -1;
 	tmp = parser_list;
 	saved_in = dup(STDIN_FILENO);
@@ -108,7 +108,7 @@ int	execute_pipes(t_parser *parser_list, char ***envp)
 		waitpid(current->child_proc, &exit_stat, 0);
 		while (waitpid(-1, &exit_stat, 0) > 0)
 			;
-		WEXITSTATUS(exit_stat);
+		exit_stat = WEXITSTATUS(exit_stat);
 	}
 	dup2(saved_in, STDIN_FILENO);
 	dup2(saved_out, STDOUT_FILENO);

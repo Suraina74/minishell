@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 18:37:54 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 14:26:57 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,13 +178,28 @@ char	*make_new_word(size_t len_new_word, char *word, char *exp_var, int start)
 	return (new_word);
 }
 
-char	*actions_if_dollar_found(char *word, int *i, char *new_word, char **envp)
+char *question_mark(char *word, int exit_stat, int len_var, int start)
+{
+	char	*exp_var;
+	char	*var;
+
+	exp_var = NULL;
+	var = ft_substr(word, start, len_var);
+	if (ft_strlen(var) == 1 && var[0] == '?')
+		exp_var = ft_itoa(exit_stat);
+	free(var);
+	return (exp_var);
+}
+
+char	*actions_if_dollar_found(char *word, int *i, char **envp, int exit_stat)
 {
 	size_t	len_var;
 	int		start;
 	char	*exp_var;
 	size_t	len_new_word;
+	char	*new_word;
 	
+	new_word = NULL;
 	exp_var = NULL;
 	start = *i + 1;
 	len_var = 0;
@@ -197,7 +212,9 @@ char	*actions_if_dollar_found(char *word, int *i, char *new_word, char **envp)
 	}
 	if (len_var != 1)
 	{
-		exp_var = get_expanded_var((len_var - 1), word, start, envp);
+		exp_var = question_mark(word, exit_stat, (len_var -1), start);
+		if (exp_var == NULL)
+			exp_var = get_expanded_var((len_var - 1), word, start, envp);
 		len_new_word = get_len_new_word(exp_var, word, len_var);
 		new_word = make_new_word(len_new_word, word, exp_var, (start - 1));
 		if (exp_var)
@@ -236,13 +253,11 @@ char	*delete_quote(char *word, int i)
 	return (new_word);
 }
 
-char	*get_and_replace_var(char *word, char **envp)
+char	*get_and_replace_var(char *word, char **envp, int exit_stat)
 {
-	char	*new_word;
 	int		i;
 
 	i = 0;
-	new_word = NULL;
 	while (word[i] != '\0')
 	{
 		if (word[i] == '\"')
@@ -251,7 +266,7 @@ char	*get_and_replace_var(char *word, char **envp)
 			while (word[i] != '\"' && word[i] != '\0')
 			{
 				if (word[i] == '$')
-					word = actions_if_dollar_found(word, &i, new_word, envp);
+					word = actions_if_dollar_found(word, &i, envp, exit_stat);
 				i++;
 			}
 			word = delete_quote(word, i);
@@ -266,16 +281,16 @@ char	*get_and_replace_var(char *word, char **envp)
 			i--;
 		}
 		else if (word[i] == '$')
-			word = actions_if_dollar_found(word, &i, new_word, envp);
-		if (i == -1 || word[i] != '\0')
+			word = actions_if_dollar_found(word, &i, envp, exit_stat);
+		if (word[0] == '\0')
+			return (free(word), NULL);
+		if (word[i] != '\0' || i == -1)
 			i++;
 	}
-	if (new_word == NULL)
-		return (word);
-	return (new_word);
+	return (word);
 }
 
-t_lexer	*expander(t_lexer *lexer_list, char **envp)
+t_lexer	*expander(t_lexer *lexer_list, char **envp, int exit_stat)
 {
 	t_lexer	*temp;
 
@@ -286,7 +301,9 @@ t_lexer	*expander(t_lexer *lexer_list, char **envp)
 		if (temp->token == PIPE && temp->next !=NULL)
 			temp = temp->next;
 		if (temp->word != NULL)
-			temp->word = get_and_replace_var(temp->word, envp);
+		{
+			temp->word = get_and_replace_var(temp->word, envp, exit_stat);
+		}
 		temp = temp->next;
 	}
 	return (lexer_list);
