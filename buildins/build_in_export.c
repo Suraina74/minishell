@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 11:13:13 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:21:13 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 // 	envp_new = NULL;
 // 	i = 1;
+// 	tmp = parser_list;
 // 	while (tmp->words[i])
 // 	{
 // 		j = 0;
@@ -49,6 +50,7 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	words_in_node = 0;
 	var_count = 0;
 	tmp = parser_list;
+	
     while (tmp->words[words_in_node])
     	words_in_node++;
 	// alleen export, zonder iets erachter.
@@ -61,9 +63,9 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	    }
         return (0);
     }
-	// envp_new = replace_var(parser_list, envp);
+	// envp_new = replace_var(parser_list, *envp);
 	// if (envp_new == NULL)
-	// // 	functie om new_envp aan te maken met nieuwe var(s) aan het eind
+	// 		// functie om new_envp aan te maken met nieuwe var(s) aan het eind
 	// Als envp_new != NULL, dan de existing var(skippen), bij het maken van de new_envp. De var_count wordt dan ook anders.
 	while ((*envp)[var_count])
 		var_count++;

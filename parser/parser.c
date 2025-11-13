@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/13 12:47:42 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:26:18 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ t_parser *parsing(char *string, char **envp, int exit_stat)
 			if ((temp->next == NULL) || (temp->next->word == NULL))
 			{
 				free_list_l(&lexer_list);
+				free(parser_list);
 				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 				return (NULL);
 			}
@@ -73,6 +74,7 @@ t_parser *parsing(char *string, char **envp, int exit_stat)
 			if (temp->next == NULL)
 			{
 				ft_putendl_fd("syntax error near unexpected token `|'", 2);
+				free(parser_list);
 				free_list_l(&lexer_list);
 				return (NULL);
 			}
@@ -80,6 +82,7 @@ t_parser *parsing(char *string, char **envp, int exit_stat)
 			{
 				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 				free_list_l(&lexer_list);
+				free(parser_list);
 				return (NULL);
 			}
 			node = create_node_p();
