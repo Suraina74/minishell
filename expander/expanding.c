@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/13 14:26:57 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/13 14:52:57 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,8 +221,13 @@ char	*actions_if_dollar_found(char *word, int *i, char **envp, int exit_stat)
 			*i = (start - 1) + ft_strlen(exp_var) - 1;
 		else
 			*i = start - 2;
+		free(word);
 	}
-	free(word);
+	else
+	{
+		new_word = word;
+		*i = start - 1;
+	}
 	free(exp_var);
 	return (new_word);
 }
