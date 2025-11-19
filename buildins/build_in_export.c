@@ -12,48 +12,143 @@
 
 #include "../mini.h"
 
-// char	**replace_var(t_parser *parser_list, char **envp)
-// {
-// 	char		**envp_new;
-// 	t_parser	*tmp;
-// 	int			i;
-// 	int			j;
+// bestaande variabelen aanpassen USER=gebruiker
+// Als het alleen iets is als test=, dan moet het wel in de export komen maar niet in de env.
 
-// 	envp_new = NULL;
-// 	i = 1;
-// 	tmp = parser_list;
-// 	while (tmp->words[i])
-// 	{
-// 		j = 0;
-// 		while (envp[j])
-// 		{
-// 			if (ft_strncmp(tmp->words[i], envp[j], ft_strlen(envp[j]) == 0))
-// 				//functie om te vervangen.
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	return (envp_new);
-// }
+int	compare_var_name(char *env_var, char *word)
+{
+	int 	len_before_equal;
+	char	*var_in_env;
+	char	*var_in_word;
 
-int	build_in_export(t_parser *parser_list, char ***envp)
+	len_before_equal = 0;
+	while (word[len_before_equal] != '=')
+		len_before_equal++;
+	var_in_word = ft_substr(word, 0, len_before_equal);
+	if (var_in_word == NULL)
+		return (1);
+	len_before_equal = 0;
+	while (env_var[len_before_equal] != '=')
+		len_before_equal++;
+	var_in_env = ft_substr(env_var, 0, len_before_equal);
+	if (var_in_env == NULL)
+		return (1);
+	if ((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word) == 0)) && (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
+		return (0);
+	return (1);
+}
+
+char	*change_content_var(char *env_var, char *word)
+{
+	char	*new_content;
+	char	*new_var;
+	char	*var;
+	int		len_before_equal;
+
+	if (compare_var_name(env_var, word) == 0)
+	{
+		while (env_var[len_before_equal] != '=')
+			len_before_equal++;
+		var = ft_substr(env_var, 0, len_before_equal);
+		if (var == NULL)
+			return (NULL);
+		new_content = ft_strchr(word, '=');
+		new_var = ft_strjoin(var, new_content);
+		if (new_var == NULL)
+			return (NULL);
+		free(var);
+		return (new_var);
+	}
+	return (env_var);
+}
+
+int	change_existing_var(t_parser *parser_list, char ***envp, int changed_vars)
+{
+	t_parser	*tmp;
+	char		*new_var;
+	int			i;
+	int			j;
+
+	i = 1;
+	tmp = parser_list;
+	while (tmp->words[i])
+	{
+		j = 0;
+		while ((*envp)[j])
+		{
+			new_var = change_content_var((*envp)[j], tmp->words[i]);
+			if (new_var == NULL)
+				return (-1);
+			if (compare_var_name((*envp)[j], tmp->words[i]) == 0)
+			{
+				free((*envp)[j]);
+				(*envp)[j] = new_var;
+				changed_vars++;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (changed_vars);
+}
+
+int	check_if_changed_var(char *word, char *envp_var, int j)
+{
+	if (compare_var_name(envp_var, word) == 0)
+		j++;
+	return (j);
+}
+
+char	**add_new_vars(char ***envp, char **words, int var_count, int words_in_node)
 {
 	size_t		i;
-	size_t		j;
-	t_parser	*tmp;     
-    size_t      words_in_node;
-	size_t		var_count;
-    char        **envp_new;
+	int			j;
+	char		**envp_new;
 
 	i = 0;
 	j = 1;
+	envp_new = NULL;
+	envp_new = (char **) malloc(((words_in_node - 1) + var_count + 1) * sizeof (char *));
+	if (envp_new == NULL)
+		return (NULL);
+	while ((*envp)[i])
+	{
+		envp_new[i] = ft_strdup((*envp)[i]);
+		if (envp_new[i] == NULL)
+			return (NULL);
+		i++;
+	}
+	while (words[j])
+	{
+		if (j == check_if_changed_var(words[j], (*envp)[i], j))
+		{
+			envp_new[i] = ft_strdup(words[j]);
+			i++;
+			j++;
+		}
+		else
+			i++;
+	}
+	envp_new[i] = NULL;
+	return (envp_new);
+}
+
+int	build_in_export(t_parser *parser_list, char ***envp)
+{
+	t_parser	*tmp;     
+    int		     words_in_node;
+	size_t		var_count;
+	int			changed_vars;
+	char		**envp_new;
+	int			i;
+
 	words_in_node = 0;
 	var_count = 0;
 	tmp = parser_list;
-	
+	i = 0;
+	changed_vars = 0;
     while (tmp->words[words_in_node])
     	words_in_node++;
-	// alleen export, zonder iets erachter.
     if (words_in_node == 1)
     {
         while ((*envp)[i])
@@ -63,33 +158,17 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	    }
         return (0);
     }
-	// envp_new = replace_var(parser_list, *envp);
-	// if (envp_new == NULL)
-	// 		// functie om new_envp aan te maken met nieuwe var(s) aan het eind
-	// Als envp_new != NULL, dan de existing var(skippen), bij het maken van de new_envp. De var_count wordt dan ook anders.
+	changed_vars = change_existing_var(parser_list, envp, changed_vars);
+	if (changed_vars == -1)
+		return (1);
+	if (changed_vars == (words_in_node - 1))
+		return (0);
 	while ((*envp)[var_count])
 		var_count++;
-	// Kijken of wat er in de node zit niet al een bestaande variable is. 
-	// Als dat niet zo is, dan envp_new aanmaken en aan het eind de variable toevoegen.
-	// Als dat wel zo is, dan de envp[i] aanpassen. Nog steeds wel een envp_new aanmaken. Met dezelfde size als de originele.
-	// Alles kopieren van envp, alleen op de plek van de aan te passen var iets anders neerzetten dan originele envp.
-    envp_new = (char **) malloc((words_in_node + var_count + 1) * sizeof (char *));
+	var_count = var_count - changed_vars;
+	envp_new = add_new_vars(envp, tmp->words, var_count, words_in_node);
 	if (envp_new == NULL)
 		return (1);
-	i = 0;
-	while ((*envp)[i])
-	{
-		envp_new[i] = ft_strdup((*envp)[i]);
-		i++;
-	}
-	while (tmp->words[j])
-	{
-		envp_new[i] = ft_strdup(tmp->words[j]);
-		i++;
-		j++;
-	}
-	envp_new[i] = NULL;
 	*envp = envp_new;
 	return (0);
-	// envp aanpassen zodat het al bestaande var's vervangt.
 }
