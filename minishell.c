@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/13 12:46:37 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:59:19 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		rl = readline("minishell > ");
+		if (rl == NULL)
+			break ;
 		parser_list = parsing(rl, envp, exit_stat);
 		exit_stat = execute_pipes(parser_list, &envp);
 		if (rl[0] != '\0')
@@ -65,5 +67,6 @@ int	main(int ac, char **av, char **envp)
 		free(rl);
 		free_list_p(&parser_list);
 	}
+	printf("exit\n");
 	return (0);
 }

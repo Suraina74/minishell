@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/13 16:21:13 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:58:22 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ char	*change_content_var(char *env_var, char *word)
 	char	*var;
 	int		len_before_equal;
 
+	len_before_equal = 0;
 	if (compare_var_name(env_var, word) == 0)
 	{
 		while (env_var[len_before_equal] != '=')
