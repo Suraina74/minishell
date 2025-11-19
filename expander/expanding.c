@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/13 14:52:57 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/19 20:19:43 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 				{
 					j++;
 					exp_var = ft_substr(envp[i], j, len_after_equal);
+					break ;
 				}
 				j++;			
 			}
@@ -115,6 +116,11 @@ char	*make_new_word(size_t len_new_word, char *word, char *exp_var, int start)
 	i = 0;
 	j = 0;
 	k = 0;
+	if ((ft_strlen(exp_var) == 2) && (exp_var[0] == '\"') && (exp_var[1] == '\"'))
+	{
+		new_word = ft_strdup("");
+		return (new_word);
+	}
 	new_word = (char *) malloc(len_new_word + 1);
 	if (new_word == NULL)
 		return (NULL);
