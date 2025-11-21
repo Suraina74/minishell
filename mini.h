@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/13 12:47:52 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/21 14:58:04 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef struct s_utils_pipe
 	int					fd_out;
 	int					fd_in;
 	pid_t				child_proc;
-	struct s_utils_pipe	*next;
 }						t_utils_pipe;
 
 void					close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
