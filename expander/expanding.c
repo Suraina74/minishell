@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/19 20:19:43 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/20 13:59:21 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,8 @@ char	*make_new_word(size_t len_new_word, char *word, char *exp_var, int start)
 	i = 0;
 	j = 0;
 	k = 0;
-	if ((ft_strlen(exp_var) == 2) && (exp_var[0] == '\"') && (exp_var[1] == '\"'))
-	{
+	if ((exp_var) && (ft_strlen(exp_var) == 2) && (exp_var[0] == '\"') && (exp_var[1] == '\"'))
+	{	
 		new_word = ft_strdup("");
 		return (new_word);
 	}

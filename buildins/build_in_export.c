@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/19 20:11:31 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/21 18:35:05 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,28 @@
 
 int	compare_var_name(char *env_var, char *word)
 {
-	int 	len_before_equal;
+	int 	len;
 	char	*var_in_env;
 	char	*var_in_word;
 
-	len_before_equal = 0;
-	while (word[len_before_equal] != '=')
-		len_before_equal++;
-	var_in_word = ft_substr(word, 0, len_before_equal);
-	// Check if al chars in word are alpha chars with isalpha().
+	len = 0;
+	while (word[len])
+	{
+		if (word[len] == '=')
+			break ;
+		len++;
+	}
+	var_in_word = ft_substr(word, 0, len);
 	if (var_in_word == NULL)
 		return (1);
-	len_before_equal = 0;
-	while (env_var[len_before_equal] != '=')
-		len_before_equal++;
-	var_in_env = ft_substr(env_var, 0, len_before_equal);
+	len = 0;
+	while (env_var[len])
+	{
+		if (env_var[len] == '=')
+			break ;
+		len++;
+	}
+	var_in_env = ft_substr(env_var, 0, len);
 	if (var_in_env == NULL)
 		return (free(var_in_word), 1);
 	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0) && (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
@@ -44,14 +51,18 @@ char	*change_content_var(char *env_var, char *word)
 	char	*new_content;
 	char	*new_var;
 	char	*var;
-	int		len_before_equal;
+	int		len;
 
-	len_before_equal = 0;
+	len = 0;
 	if (compare_var_name(env_var, word) == 0)
 	{
-		while (env_var[len_before_equal] != '=')
-			len_before_equal++;
-		var = ft_substr(env_var, 0, len_before_equal);
+		while (env_var[len])
+		{
+			if (env_var[len] == '=')
+				break ;
+			len++;
+		}
+		var = ft_substr(env_var, 0, len);
 		if (var == NULL)
 			return (NULL);
 		new_content = ft_strchr(word, '=');
@@ -77,7 +88,8 @@ int	change_existing_var(char *word, char ***envp)
 			return (-1);
 		if (compare_var_name((*envp)[j], word) == 0)
 		{
-			(*envp)[j] = new_var;
+			free((*envp)[j]);
+			(*envp)[j] = ft_strdup(new_var);
 			return (1);
 		}
 		j++;
@@ -129,29 +141,57 @@ char	**add_new_vars(char ***envp, char *word, int var_count)
 	}
 	envp_new[i] = ft_strdup(word);
 	envp_new[i + 1] = NULL;
-	return (envp_new);
+	return (free(empty_string), envp_new);
 }
 
-// int	check_if_valid(char *word, char ***envp)
-// {
-// 	int	i;
+int	check_if_valid(char *word)
+{
+	int	i;
+	int 	len_before_equal;
+	char	*var_in_word;
+	bool	equal_sign;
 
-// 	i = 0;
-// 	while (word[i])
-// 	{
-// 		if (word[0] == '=')
-// 			return (1);
-// 		if ((word[i] == '=') && (word[i + 1] == '\0'))
-// 			// Iets als test=
-// 			// Kijken of de chars in word allemaal alpha chars zijn met isalpha().
-// 			// Functie om test="" aan env toe te voegen.
-// 		i++;
-// 	}
-// 	// Hierna is er geen '=' gevonden, iets als test (zonder iets erachter).
-// 	// Kijken of de chars in word allemaal alpha chars zijn met isalpha().
-// 	// Functie om test aan env toe te voegen.
-// 	return (0);
-// }
+	i = 0;
+	equal_sign = false;
+	len_before_equal = 0;
+	var_in_word = NULL;
+	if (ft_isalpha(word[0]) == 1)
+	{
+		printf("export: `%s': not a valid identifier\n", word);
+		return (1);
+	}
+	if (ft_strchr(word, '=') != NULL)
+		equal_sign = true;
+	if (equal_sign == true)
+	{
+		while (word[len_before_equal] != '=')
+			len_before_equal++;
+		var_in_word = ft_substr(word, 0, len_before_equal);
+		if (var_in_word == NULL)
+			return (1);
+		while (var_in_word[i])
+		{
+			if ((ft_isalnum(var_in_word[i])) == 1)
+			{
+				printf("export: `%s': not a valid identifier\n", word);
+				return (free(var_in_word), 1);
+			}
+			i++;
+		}
+		return (free(var_in_word), 0);
+	}
+	i = 0;
+	while (word[i])
+	{
+		if ((ft_isalnum(word[i])) == 1)
+		{
+			printf("export: `%s': not a valid identifier\n", word);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
 
 int	build_in_export(t_parser *parser_list, char ***envp)
 {
@@ -161,11 +201,17 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	int			changed_var;
 	char		**envp_new;
 	int			i;
+	int			v;
 
 	words_in_node = 0;
 	var_count = 0;
+	envp_new = NULL;
 	tmp = parser_list;
 	i = 0;
+	v = 0;
+	while ((*envp)[var_count])
+		var_count++;
+	// sort(var_count, export);
     while (tmp->words[words_in_node])
     	words_in_node++;
     if (words_in_node == 1)
@@ -174,23 +220,21 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	    {
 		    printf("%s\n", (*envp)[i]);
             i++;
-	    }
+		}
         return (0);
     }
-	// Als er geen '=' na een woord staat of een op zichzelf staand woord, dan moet het ook aan env worden toegevoegd.
-	// export print deze variabelen wel, maar env niet.
-	while ((*envp)[var_count])
-		var_count++;
 	i = 1;
 	while (tmp->words[i])
 	{
-		// check_if_valid(tmp->words[i], envp);
+		if (check_if_valid(tmp->words[i]) == 1)
+			return (1);
 		changed_var = change_existing_var(tmp->words[i], envp);
 		if (changed_var == -1)
 			return (1);
 		if (changed_var == 0)
 		{
 			envp_new = add_new_vars(envp, tmp->words[i], var_count);
+			free_copy_envp(envp);
 			if (envp_new == NULL)
 				return (1);
 			else
