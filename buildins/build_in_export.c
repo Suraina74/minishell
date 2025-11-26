@@ -6,14 +6,11 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/21 18:35:05 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:10:06 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-// bestaande variabelen aanpassen USER=gebruiker
-// Als het alleen iets is als test=, dan moet het wel in de export komen maar niet in de env.
 
 int	compare_var_name(char *env_var, char *word)
 {
@@ -48,28 +45,26 @@ int	compare_var_name(char *env_var, char *word)
 
 char	*change_content_var(char *env_var, char *word)
 {
-	char	*new_content;
 	char	*new_var;
-	char	*var;
-	int		len;
+	int		i;
+	char	*empty_string;
 
-	len = 0;
+	i = 0;
 	if (compare_var_name(env_var, word) == 0)
 	{
-		while (env_var[len])
+		while (word[i])
 		{
-			if (env_var[len] == '=')
-				break ;
-			len++;
+			if ((word[i] == '=') && (word[i + 1] == '\0'))
+			{
+				empty_string = "\"\"";
+				new_var = ft_strjoin(word, empty_string);
+				if (new_var == NULL)
+					return (NULL);
+				return (new_var);
+			}
+			i++;
 		}
-		var = ft_substr(env_var, 0, len);
-		if (var == NULL)
-			return (NULL);
-		new_content = ft_strchr(word, '=');
-		new_var = ft_strjoin(var, new_content);
-		if (new_var == NULL)
-			return (NULL);
-		free(var);
+		new_var = ft_strdup(word);
 		return (new_var);
 	}
 	return (env_var);
@@ -89,7 +84,7 @@ int	change_existing_var(char *word, char ***envp)
 		if (compare_var_name((*envp)[j], word) == 0)
 		{
 			free((*envp)[j]);
-			(*envp)[j] = ft_strdup(new_var);
+			(*envp)[j] = new_var;
 			return (1);
 		}
 		j++;
@@ -114,7 +109,6 @@ char	**add_new_vars(char ***envp, char *word, int var_count)
 
 	i = 0;
 	j = 0;
-	empty_string = ft_strdup("\"\"");
 	envp_new = NULL;
 	envp_new = (char **) malloc((var_count + 2) * sizeof (char *));
 	if (envp_new == NULL)
@@ -130,18 +124,27 @@ char	**add_new_vars(char ***envp, char *word, int var_count)
 	{
 		if ((word[j] == '=') && (word[j + 1] == '\0'))
 		{
+			empty_string = "\"\"";
 			new_word = ft_strjoin(word, empty_string);
-			envp_new[i] = ft_strdup(new_word);
+			if (new_word == NULL)
+			{
+				free_copy_envp(&envp_new);
+				return (NULL);
+			}
+			envp_new[i] = new_word;
 			envp_new[i + 1] = NULL;
-			free(new_word);
-			free(empty_string);
 			return (envp_new);
 		}
 		j++;
 	}
 	envp_new[i] = ft_strdup(word);
+	if (envp_new[i] == NULL)
+	{
+		free_copy_envp(&envp_new);
+		return (NULL);
+	}
 	envp_new[i + 1] = NULL;
-	return (free(empty_string), envp_new);
+	return (envp_new);
 }
 
 int	check_if_valid(char *word)
@@ -201,16 +204,11 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	int			changed_var;
 	char		**envp_new;
 	int			i;
-	int			v;
 
 	words_in_node = 0;
-	var_count = 0;
 	envp_new = NULL;
 	tmp = parser_list;
 	i = 0;
-	v = 0;
-	while ((*envp)[var_count])
-		var_count++;
 	// sort(var_count, export);
     while (tmp->words[words_in_node])
     	words_in_node++;
@@ -226,6 +224,9 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	i = 1;
 	while (tmp->words[i])
 	{
+		var_count = 0;
+		while ((*envp)[var_count])
+			var_count++;
 		if (check_if_valid(tmp->words[i]) == 1)
 			return (1);
 		changed_var = change_existing_var(tmp->words[i], envp);

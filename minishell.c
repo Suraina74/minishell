@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/21 18:24:25 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:13:09 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,33 +59,43 @@ void	free_list_p(t_parser **parser_list)
 	}
 }
 
-int	main(int ac, char **av, char **envp)
+char **copy_envp(char **envp)
 {
-	char		*rl;
-	t_parser	*parser_list;
-	int			exit_stat;
 	size_t		var_count;
 	char		**envp_new;
 	int			v;
 
-	exit_stat = 0;
-	(void)ac;
-	(void)av;
 	v = 0;
 	var_count = 0;
 	while (envp[var_count])
 		var_count++;
 	envp_new = (char **) malloc(sizeof(char *) * (var_count + 1));
 	if (!envp_new)
-		return (1);
+		return (NULL);
 	while (envp[v])
 	{
 		envp_new[v] = ft_strdup(envp[v]);
 		if (envp_new[v] == NULL)
-			return 1;
+			return (NULL);
 		v++;
 	}
 	envp_new[v] = NULL;
+	return (envp_new);
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	char		*rl;
+	t_parser	*parser_list;
+	int			exit_stat;
+	char		**envp_new;
+
+	exit_stat = 0;
+	(void)ac;
+	(void)av;
+	envp_new = copy_envp(envp);
+	if (envp_new == NULL)
+		return (1);
 	while (1)
 	{
 		rl = readline("minishell > ");
@@ -98,6 +108,8 @@ int	main(int ac, char **av, char **envp)
 		free(rl);
 		free_list_p(&parser_list);
 	}
+	// free(rl);
+	rl_clear_history();
 	free_copy_envp(&envp_new);
 	printf("exit\n");
 	return (0);
