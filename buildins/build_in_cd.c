@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 16:32:37 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/22 13:54:23 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 12:47:37 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	build_in_cd(char **d2_array)
 {
-	char	s[100];
 	size_t	i;
 
 	i = 0;
@@ -25,6 +24,5 @@ int	build_in_cd(char **d2_array)
 			printf("error\n");
 		i++;
 	}
-	printf("%s\n", getcwd(s, 100));
 	return (0);
 }
