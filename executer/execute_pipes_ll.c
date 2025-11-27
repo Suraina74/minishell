@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/21 14:57:57 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 18:40:28 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,50 +26,76 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	*cmd_struct = tmp;
 }
 
-void	start_is_fd(t_utils_pipe *pipe_hand, t_parser *parser)
+void	open_redirections(t_utils_pipe *pipe_hand, t_parser *parser)
 {
-	t_parser	*tmp;
-	t_lexer		*tmp_red;
+	t_lexer	*tmp_red;
 
-	tmp = parser;
-	tmp_red = tmp->redirections;
+	tmp_red = parser->redirections;
 	while (tmp_red)
 	{
 		if (tmp_red->token == OUT)
-		{
 			pipe_hand->fd_out = open(tmp_red->next->word,
-					O_CREAT | O_TRUNC | O_WRONLY, 0644);
-			if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
-			{
-				perror("Dup2");
-			}
-			close(pipe_hand->fd_out);
-		}
-		if (tmp_red->token == OUTOUT)
-		{
+					O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		else if (tmp_red->token == OUTOUT)
 			pipe_hand->fd_out = open(tmp_red->next->word,
-					O_CREAT | O_APPEND | O_WRONLY, 0644);
-			if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
-			{
-				perror("Dup2");
-			}
-			close(pipe_hand->fd_out);
-		}
-		if (tmp_red->token == IN)
-		{
+					O_CREAT | O_WRONLY | O_APPEND, 0644);
+		else if (tmp_red->token == IN)
 			pipe_hand->fd_in = open(tmp_red->next->word, O_RDONLY);
-			if (dup2(pipe_hand->fd_in, STDIN_FILENO) == -1)
-			{
-				perror("dup2");
-				close(pipe_hand->fd_in);
-			}
-			close(pipe_hand->fd_in);
-		}
-		if (tmp_red->token == ININ)
-		{
-			pipe_hand->fd_in = 0;
-			heredoc_start(tmp, pipe_hand);
-		}
+		else if (tmp_red->token == ININ)
+			heredoc_start(parser, pipe_hand);
 		tmp_red = tmp_red->next;
+	}
+}
+
+void	init_pipe(t_utils_pipe *pipe_hand)
+{
+	if (pipe(pipe_hand->fd) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	fd_input(t_utils_pipe *pipe_hand, int *prev_in)
+{
+	if (pipe_hand->fd_in != -1)
+	{
+		if (dup2(pipe_hand->fd_in, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(pipe_hand->fd_in);
+			return ;
+		}
+	}
+	else if (*prev_in != -1)
+	{
+		if (dup2(*prev_in, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(*prev_in);
+			return ;
+		}
+	}
+}
+
+void	fd_output(t_utils_pipe *pipe_hand, int *is_last)
+{
+	if (pipe_hand->fd_out != -1)
+	{
+		if (dup2(pipe_hand->fd_out, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(pipe_hand->fd_out);
+			return ;
+		}
+	}
+	else if (!*is_last)
+	{
+		if (dup2(pipe_hand->fd[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(pipe_hand->fd[1]);
+			return ;
+		}
 	}
 }

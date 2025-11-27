@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 20:42:51 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 18:33:56 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,73 +35,74 @@ typedef enum s_tokens
 	PIPE = 2,
 	ININ = 3,
 	OUTOUT = 4
-}						t_tokens;
+}					t_tokens;
 
 typedef struct s_lexer
 {
-	char				*word;
-	t_tokens			token;
-	struct s_lexer		*next;
-}						t_lexer;
+	char			*word;
+	t_tokens		token;
+	struct s_lexer	*next;
+}					t_lexer;
 
 typedef struct s_parser
 {
-	char				**words;
-	int					nbr_red;
-	t_lexer				*redirections;
-	char				*heredoc;
-	struct s_parser		*next;
-}						t_parser;
+	char			**words;
+	int				nbr_red;
+	t_lexer			*redirections;
+	char			*heredoc;
+	struct s_parser	*next;
+}					t_parser;
 
 typedef struct s_utils_pipe
 {
-	char				**command;
-	int					fd[2];
-	int					fd_out;
-	int					fd_in;
-	pid_t				child_proc;
-}						t_utils_pipe;
+	char			**command;
+	int				fd[2];
+	int				fd_out;
+	int				fd_in;
+	pid_t			child_proc;
+}					t_utils_pipe;
 
-void					close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
-							int *prev_in, int fd[2]);
-void					ft_free_path(char **arr);
-char					**x_path(char **envp, char *command);
-int						execute_pipes(t_parser *parser_list, char ***envp);
-int						check_input(char *string);
-t_lexer					*create_node_l(char *string);
-t_lexer					*last_node_l(t_lexer *lexer_list);
-void					add_to_end_l(t_lexer **lexer_list, t_lexer *node);
-t_lexer					*lexing(char *string);
-t_parser				*parsing(char *string, char **envp, int exit_stat);
-t_parser				*create_node_p(void);
-t_parser				*last_node_p(t_parser *parser_list);
-void					add_to_end_p(t_parser **parser_list, t_parser *node);
-t_lexer					*create_node_red();
-void					free_list_l(t_lexer **lexer_list);
-void					free_list_p(t_parser **parser_list);
-t_lexer					*del_empty_strings(t_lexer *lexer_list);
-t_parser				*create_2d_array_per_node(t_parser *parser_list,
-							t_lexer *lexer_list);
-void					fd_outs(t_utils_pipe *pipe_hand, t_parser *tmp);
-void					start_is_fd(t_utils_pipe *pipe_hand, t_parser *tmp);
-t_lexer					*expander(t_lexer *lexer_list, char **envp, int exit_stat);
-size_t					len_without_empty_strings(char *word);
-// char					**execute_buildin(t_parser *parser_list, char **envp);
-int						execute_buildin(t_parser *parser_list, char ***envp);
-int						build_in_echo(char **d2_wds);
-int						build_in_cd(char **path);
-int						build_in_pwd(void);
-int						build_in_exit(int exit_stat, t_parser *parser_list);
-int						build_in_export(t_parser *parser_list, char ***envp);
-void					free_copy_envp(char ***envp_new);
-int 					build_in_unset(t_parser *parser_list, char ***envp);
-int						build_in_env(char ***envp);
-int						build_in_flag(t_parser *parser_list);
-void					execute_fun(t_parser *tmp, char ***envp);
-void					init_child_proc(t_parser *tmp, int *prev_in,
-							t_utils_pipe *pipe_hand, char ***envp);
-void					init_cmd(t_utils_pipe **cmd_struct);
-void					heredoc_start(t_parser *parsing,
-							t_utils_pipe *pipe_hand);
+void				ft_free_path(char **arr);
+char				**x_path(char **envp, char *command);
+int					execute_pipes(t_parser *parser_list, char ***envp);
+int					check_input(char *string);
+t_lexer				*create_node_l(char *string);
+t_lexer				*last_node_l(t_lexer *lexer_list);
+void				add_to_end_l(t_lexer **lexer_list, t_lexer *node);
+t_lexer				*lexing(char *string);
+t_parser			*parsing(char *string, char **envp, int exit_stat);
+t_parser			*create_node_p(void);
+t_parser			*last_node_p(t_parser *parser_list);
+void				add_to_end_p(t_parser **parser_list, t_parser *node);
+t_lexer				*create_node_red(void);
+void				free_list_l(t_lexer **lexer_list);
+void				free_list_p(t_parser **parser_list);
+t_lexer				*del_empty_strings(t_lexer *lexer_list);
+t_parser			*create_2d_array_per_node(t_parser *parser_list,
+						t_lexer *lexer_list);
+t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
+size_t				len_without_empty_strings(char *word);
+int					execute_buildin(t_parser *parser_list, char ***envp);
+int					build_in_echo(char **d2_wds);
+int					build_in_cd(char **path);
+int					build_in_pwd(void);
+int					build_in_exit(int exit_stat, t_parser *parser_list);
+int					build_in_export(t_parser *parser_list, char ***envp);
+void				free_copy_envp(char ***envp_new);
+int					build_in_unset(t_parser *parser_list, char ***envp);
+int					build_in_env(char ***envp);
+int					build_in_flag(t_parser *parser_list);
+void				execute_fun(t_parser *tmp, char ***envp);
+void				init_child_proc(t_parser *tmp, int *prev_in,
+						t_utils_pipe *pipe_hand, char ***envp);
+void				init_cmd(t_utils_pipe **cmd_struct);
+void				heredoc_start(t_parser *parsing, t_utils_pipe *pipe_hand);
+void				open_redirections(t_utils_pipe *pipe_hand,
+						t_parser *parser);
+void				fd_output(t_utils_pipe *pipe_hand, int *is_last);
+void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);
+void				init_pipe(t_utils_pipe *pipe_hand);
+void				handle_single_build_in(t_utils_pipe *pipe_hand,
+						t_parser *tmp, char ***envp);
 
 #endif
