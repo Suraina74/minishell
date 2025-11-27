@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:21 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 21:31:05 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 12:54:13 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,13 @@ char **delete_var(int i, char ***envp)
     return (envp_new);
 }
 
-char **check_and_delete_var(char *word, char ***envp)
+int check_and_delete_var(char *word, char ***envp, char ***envp_new)
 {
-    char    **envp_new;
     int     i;
     int     len;
     char    *var_in_env;
     
     i = 0;
-    envp_new = NULL;
     while ((*envp)[i])
     {
         len = 0;
@@ -70,19 +68,19 @@ char **check_and_delete_var(char *word, char ***envp)
 	    }
 	    var_in_env = ft_substr((*envp)[i], 0, len);
         if (var_in_env == NULL)
-		    return (NULL);
+		    return (-1);
         if (((ft_strncmp(var_in_env, word, ft_strlen(word))) == 0) && (ft_strlen(word) == ft_strlen(var_in_env)))
         {
-            envp_new = delete_var(i, envp);
+            (*envp_new) = delete_var(i, envp);
             free(var_in_env);
-            if (envp_new == NULL)
-                return (NULL);
-            return (envp_new);
+            if ((*envp_new) == NULL)
+                return (-1);
+            return (0);
         }
         free(var_in_env);
         i++;
     }
-    return (*envp);
+    return (1);
 }
 
 int build_in_unset(t_parser *parser_list, char ***envp)
@@ -90,17 +88,21 @@ int build_in_unset(t_parser *parser_list, char ***envp)
     char    **envp_new;
     t_parser    *tmp;
     int         i;
+    int         ret_value;
     
+    envp_new = NULL;
     tmp = parser_list;
     i = 1;
 	while (tmp->words[i])
 	{
-        envp_new = check_and_delete_var(tmp->words[i], envp);
-        free_copy_envp(envp);
-        if (envp_new == NULL)
-            return (1);
-        else
+        ret_value = check_and_delete_var(tmp->words[i], envp, &envp_new);
+        if (ret_value == 0)
+        {
+            free_copy_envp(envp);
             *envp = envp_new;
+        }
+        else if (ret_value == -1)
+            return (1);
         i++;
     }
     return (0);
