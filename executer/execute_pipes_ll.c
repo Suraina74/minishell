@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 18:55:23 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:05:41 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	*cmd_struct = tmp;
 }
 
-void	open_redirections(t_utils_pipe *pipe_hand, t_parser *parser)
+void	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser)
 {
 	t_lexer	*tmp_red;
 

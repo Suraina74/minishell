@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 18:33:56 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:06:05 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void				init_child_proc(t_parser *tmp, int *prev_in,
 						t_utils_pipe *pipe_hand, char ***envp);
 void				init_cmd(t_utils_pipe **cmd_struct);
 void				heredoc_start(t_parser *parsing, t_utils_pipe *pipe_hand);
-void				open_redirections(t_utils_pipe *pipe_hand,
+void				pick_redirections(t_utils_pipe *pipe_hand,
 						t_parser *parser);
 void				fd_output(t_utils_pipe *pipe_hand, int *is_last);
 void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);

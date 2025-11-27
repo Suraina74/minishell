@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:01:28 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:06:19 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	int	saved_in;
 	int	saved_out;
 
-	open_redirections(pipe_hand, tmp);
+	pick_redirections(pipe_hand, tmp);
 	saved_in = dup(STDIN_FILENO);
 	saved_out = dup(STDOUT_FILENO);
 	if (pipe_hand->fd_in != -1)
@@ -86,7 +86,8 @@ void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	free(pipe_hand);
 }
 
-void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat, char ***envp)
+void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
+		char ***envp)
 {
 	t_utils_pipe	*current;
 	int				prev_in;
@@ -96,7 +97,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat, char *
 	{
 		pipe_hand->fd_in = -1;
 		pipe_hand->fd_out = -1;
-		open_redirections(pipe_hand, tmp);
+		pick_redirections(pipe_hand, tmp);
 		if (tmp->next)
 			init_pipe(pipe_hand);
 		init_child_proc(tmp, &prev_in, pipe_hand, envp);
@@ -108,7 +109,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat, char *
 	}
 	current = pipe_hand;
 	waitpid(current->child_proc, exit_stat, 0);
-	while (waitpid(-1, &exit_stat, 0) > 0)
+	while (waitpid(-1, exit_stat, 0) > 0)
 		;
 	*exit_stat = WEXITSTATUS(*exit_stat);
 }
