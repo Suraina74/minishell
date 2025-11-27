@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:17:14 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:15:07 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:29:36 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ void	execute_fun(t_parser *tmp, char ***envp)
 	{
 		perror("execve");
 		free(path);
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 }

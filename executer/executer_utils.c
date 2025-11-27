@@ -6,11 +6,34 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/10/15 13:35:12 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:37:55 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
+
+void	init_cmd(t_utils_pipe **cmd_struct)
+{
+	t_utils_pipe	*tmp;
+
+	tmp = malloc(sizeof(t_utils_pipe));
+	if (!tmp)
+		return ;
+	tmp->command = NULL;
+	tmp->fd_in = -1;
+	tmp->fd_out = -1;
+	tmp->child_proc = -1;
+	*cmd_struct = tmp;
+}
+
+void	init_pipe(int *fd)
+{
+	if (pipe(fd) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+}
 
 void	ft_free_path(char **arr)
 {

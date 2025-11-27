@@ -6,34 +6,11 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:22:11 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:37:48 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-void	init_pipe(int *fd)
-{
-	if (pipe(fd) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	init_cmd(t_utils_pipe **cmd_struct)
-{
-	t_utils_pipe	*tmp;
-
-	tmp = malloc(sizeof(t_utils_pipe));
-	if (!tmp)
-		return ;
-	tmp->command = NULL;
-	tmp->fd_in = -1;
-	tmp->fd_out = -1;
-	tmp->child_proc = -1;
-	*cmd_struct = tmp;
-}
 
 void	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser)
 {

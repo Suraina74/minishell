@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:25:02 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:54:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,13 @@ void	child_setup_fds(t_utils_pipe *pipe_hand, int prev_in, int is_last)
 	fd_output(pipe_hand, &is_last);
 	if (pipe_hand->fd_in != -1)
 		close(pipe_hand->fd_in);
+	if (prev_in != -1 && pipe_hand->fd_in == -1)
+		close(prev_in);
 	if (pipe_hand->fd_out != -1)
 		close(pipe_hand->fd_out);
-	if (prev_in != -1)
-		close(prev_in);
+	close(pipe_hand->fd[0]);
 	if (!is_last)
-	{
-		close(pipe_hand->fd[0]);
 		close(pipe_hand->fd[1]);
-	}
 }
 
 void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
@@ -59,6 +57,10 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 	}
 }
 
+/**
+ * @brief handles one build-in, redirects and restores fds once it is
+ * done.
+*/
 void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 		char ***envp)
 {
