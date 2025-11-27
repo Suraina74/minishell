@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 18:31:56 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:01:28 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,50 +86,47 @@ void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	free(pipe_hand);
 }
 
+void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat, char ***envp)
+{
+	t_utils_pipe	*current;
+	int				prev_in;
+
+	prev_in = -1;
+	while (tmp)
+	{
+		pipe_hand->fd_in = -1;
+		pipe_hand->fd_out = -1;
+		open_redirections(pipe_hand, tmp);
+		if (tmp->next)
+			init_pipe(pipe_hand);
+		init_child_proc(tmp, &prev_in, pipe_hand, envp);
+		if (pipe_hand->fd_in != -1)
+			close(pipe_hand->fd_in);
+		if (pipe_hand->fd_out != -1)
+			close(pipe_hand->fd_out);
+		tmp = tmp->next;
+	}
+	current = pipe_hand;
+	waitpid(current->child_proc, exit_stat, 0);
+	while (waitpid(-1, &exit_stat, 0) > 0)
+		;
+	*exit_stat = WEXITSTATUS(*exit_stat);
+}
+
 int	execute_pipes(t_parser *parser_list, char ***envp)
 {
 	t_parser		*tmp;
-	t_utils_pipe	*current;
 	t_utils_pipe	*pipe_hand;
-	int				prev_in;
 	int				exit_stat;
 
 	exit_stat = 0;
-	prev_in = -1;
 	tmp = parser_list;
 	init_cmd(&pipe_hand);
 	if (tmp == NULL)
-		return (free(pipe_hand), exit_stat);
+		return (free(pipe_hand), EXIT_FAILURE);
 	if (build_in_flag(tmp) && tmp->next == NULL)
-		return (handle_single_build_in(pipe_hand, tmp, envp), 0);
+		return (handle_single_build_in(pipe_hand, tmp, envp), exit_stat);
 	else
-	{
-		while (tmp)
-		{
-			pipe_hand->fd_in = -1;
-			pipe_hand->fd_out = -1;
-			open_redirections(pipe_hand, tmp);
-			if (tmp->next)
-				init_pipe(pipe_hand);
-			init_child_proc(tmp, &prev_in, pipe_hand, envp);
-			if (pipe_hand->fd_in != -1)
-			{
-				close(pipe_hand->fd_in);
-				pipe_hand->fd_in = -1;
-			}
-			if (pipe_hand->fd_out != -1)
-			{
-				close(pipe_hand->fd_out);
-				pipe_hand->fd_out = -1;
-			}
-			tmp = tmp->next;
-		}
-		current = pipe_hand;
-		waitpid(current->child_proc, &exit_stat, 0);
-		while (waitpid(-1, &exit_stat, 0) > 0)
-			;
-		exit_stat = WEXITSTATUS(exit_stat);
-	}
-	free(pipe_hand);
-	return (exit_stat);
+		handle_other(tmp, pipe_hand, &exit_stat, envp);
+	return (free(pipe_hand), exit_stat);
 }

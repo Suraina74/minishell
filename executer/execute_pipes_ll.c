@@ -6,11 +6,20 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 18:40:28 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 18:55:23 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
+
+void	init_pipe(t_utils_pipe *pipe_hand)
+{
+	if (pipe(pipe_hand->fd) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+}
 
 void	init_cmd(t_utils_pipe **cmd_struct)
 {
@@ -44,15 +53,6 @@ void	open_redirections(t_utils_pipe *pipe_hand, t_parser *parser)
 		else if (tmp_red->token == ININ)
 			heredoc_start(parser, pipe_hand);
 		tmp_red = tmp_red->next;
-	}
-}
-
-void	init_pipe(t_utils_pipe *pipe_hand)
-{
-	if (pipe(pipe_hand->fd) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
 	}
 }
 
