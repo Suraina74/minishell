@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 19:17:38 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:24:59 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ t_parser *parsing(char *string, char **envp, int exit_stat)
 	if (parser_list == NULL)
 		return (NULL);
 	lexer_list = expander(lexer_list, envp, exit_stat);
+	if (lexer_list == NULL)
+		return (NULL);
 	parser_list = create_2d_array_per_node(parser_list, lexer_list);
 	free_list_l(&lexer_list);
 	return (parser_list);
