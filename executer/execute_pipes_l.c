@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:06:19 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:25:02 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		pipe_hand->fd_out = -1;
 		pick_redirections(pipe_hand, tmp);
 		if (tmp->next)
-			init_pipe(pipe_hand);
+			init_pipe(pipe_hand->fd);
 		init_child_proc(tmp, &prev_in, pipe_hand, envp);
 		if (pipe_hand->fd_in != -1)
 			close(pipe_hand->fd_in);
@@ -123,7 +123,7 @@ int	execute_pipes(t_parser *parser_list, char ***envp)
 	exit_stat = 0;
 	tmp = parser_list;
 	init_cmd(&pipe_hand);
-	if (tmp == NULL)
+	if (!tmp)
 		return (free(pipe_hand), EXIT_FAILURE);
 	if (build_in_flag(tmp) && tmp->next == NULL)
 		return (handle_single_build_in(pipe_hand, tmp, envp), exit_stat);

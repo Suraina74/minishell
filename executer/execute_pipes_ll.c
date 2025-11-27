@@ -6,15 +6,15 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:05:41 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:22:11 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-void	init_pipe(t_utils_pipe *pipe_hand)
+void	init_pipe(int *fd)
 {
-	if (pipe(pipe_hand->fd) == -1)
+	if (pipe(fd) == -1)
 	{
 		perror("pipe");
 		exit(EXIT_FAILURE);
