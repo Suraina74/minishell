@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 19:47:42 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:09:03 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 	char	*var;
 	char	*exp_var;
 	int		i;
-	int		j;
+	size_t	j;
 	size_t	len;
-	char	*var_in_env;
+	char	*content;
 
 	i = 0;
+	j = 0;
 	exp_var = NULL;
-	var = ft_substr(word, start, len_var); // USER
+	var = ft_substr(word, start, len_var);
 	if (var == NULL)
 		return (NULL);
 	while (envp[i])
@@ -37,17 +38,18 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 		}
 		if (((ft_strncmp(envp[i], var, ft_strlen(var))) == 0) && (ft_strlen(var) == len))
 		{
-			j = 0;
-			while (envp[i][j])
+			content = ft_strchr(&envp[i][j], '=');
+			if (content)
 			{
-				if (ft_strchr(&envp[i][j], '='))
+				while (content[j])
 				{
-					exp_var = ft_strchr(&envp[i][j], '=');
-					free(var);
-					return (exp_var);
+					if (content[j] == '=')
+						break ;
+					j++;
 				}
-				j++;
+				exp_var = ft_substr(content, (j + 1), ft_strlen(content));
 			}
+			return (free(var), exp_var);	
 		}
 		i++;
 	}
@@ -145,6 +147,7 @@ char	*make_new_word(size_t len_new_word, char *word, char *exp_var, int start)
 				i++;
 		}
 	}
+	free(exp_var);
 	new_word[j] = '\0';
 	return (new_word);
 }
