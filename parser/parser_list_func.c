@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:39:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 14:04:58 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 13:40:39 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ t_parser	*create_node_p(void)
 	node->words = NULL;
 	node->heredoc = NULL;
 	node->next = NULL;
-	node->nbr_red = 0;
 	return (node);
 }
 

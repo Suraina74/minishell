@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 20:42:51 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 13:40:31 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_lexer
 typedef struct s_parser
 {
 	char				**words;
-	int					nbr_red;
 	t_lexer				*redirections;
 	char				*heredoc;
 	struct s_parser		*next;

@@ -6,97 +6,125 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/13 16:26:18 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:17:38 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-t_parser *parsing(char *string, char **envp, int exit_stat)
-{
-	t_lexer		*lexer_list;
-	t_lexer		*temp;
-	t_parser	*parser_list;
-	t_parser	*node;
-	t_lexer		*node_red;
-	int			nbr_commands_and_pipes;
+// PIPE woord erna en woord ervoor.
+// redirections must be followed by a word.
 
-	parser_list = NULL;
-	nbr_commands_and_pipes = 0;
-	lexer_list = lexing(string);
-	if (lexer_list == NULL)
-		return (NULL);
-	temp = lexer_list;
-	// PIPE woord erna en woord ervoor
-	// redirections must be followed by a word.
-	if (temp->token == PIPE)
+int	parsing_error(t_lexer *lexer_list)
+{
+	if (lexer_list->token == PIPE)
 	{
 		ft_putendl_fd("syntax error near unexpected token `|'", 2);
 		free_list_l(&lexer_list);
-		return (NULL);
+		return (1);
 	}
-	if (temp->token != -1 && (temp->next == NULL || temp->next->word == NULL))
+	if (lexer_list->token != -1 && (lexer_list->next == NULL || lexer_list->next->word == NULL))
 	{
 		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 		free_list_l(&lexer_list);
-		return (NULL);
+		return (1);
 	}
-	node = create_node_p();
-	add_to_end_p(&parser_list, node);
+	return (0);
+}
+
+int	pipe_error(t_lexer *temp, t_lexer *lexer_list, t_parser *parser_list)
+{
+	if (temp->next == NULL)
+	{
+		ft_putendl_fd("syntax error near unexpected token `|'", 2);
+		free(parser_list);
+		free_list_l(&lexer_list);
+		return (1);
+	}
+	if (temp->next->word == NULL)
+	{
+		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+		free_list_l(&lexer_list);
+		free(parser_list);
+		return (1);
+	}
+	return (0);
+}
+
+t_lexer	*add_redirection(t_lexer **node_red, t_lexer *temp, t_parser **node)
+{
+	*node_red = create_node_red();
+	(*node_red)->token = temp->token;
+	add_to_end_l(&(*node)->redirections, *node_red);
+	temp->token = DISUSE;
+	temp = temp->next;
+	*node_red = create_node_red();
+	(*node_red)->word = ft_strdup(temp->word);
+	add_to_end_l(&(*node)->redirections, *node_red);
+	free (temp->word);
+	temp->word = NULL;
+	temp = temp->next;
+	return (temp);
+}
+
+int	error_redirections(t_lexer *temp, t_lexer *lexer_list, t_parser *parser_list)
+{
+	if ((temp->next == NULL) || (temp->next->word == NULL))
+	{
+		free_list_l(&lexer_list);
+		free(parser_list);
+		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+		return (1);
+	}
+	return (0);
+}
+
+t_parser	*put_red_in_parser(t_lexer *lexer_list, t_parser *parser_list, t_parser *node)
+{
+	t_lexer		*temp;
+	t_lexer		*node_red;
+
+	temp = lexer_list;
 	while (temp != NULL)
 	{
 		if (temp->token == IN || temp->token == OUT || temp->token == ININ || temp->token == OUTOUT)
 		{
-			if ((temp->next == NULL) || (temp->next->word == NULL))
-			{
-				free_list_l(&lexer_list);
-				free(parser_list);
-				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+			if ((error_redirections(temp, lexer_list, parser_list)) == 1)
 				return (NULL);
-			}
 			else
-			{
-				node_red = create_node_red();
-				node_red->token = temp->token;
-				add_to_end_l(&node->redirections, node_red);
-				temp->token = DISUSE;
-				temp = temp->next;
-				node_red = create_node_red();
-				node_red->word = ft_strdup(temp->word);
-				add_to_end_l(&node->redirections, node_red);
-				free (temp->word);
-				temp->word = NULL;
-				temp = temp->next;
-			}
+				temp = add_redirection(&node_red, temp, &node);
 		}
 		else if (temp->token == PIPE)
 		{
-			if (temp->next == NULL)
-			{
-				ft_putendl_fd("syntax error near unexpected token `|'", 2);
-				free(parser_list);
-				free_list_l(&lexer_list);
+			if ((pipe_error(temp, lexer_list, parser_list) == 1))
 				return (NULL);
-			}
-			if (temp->next->word == NULL)
-			{
-				ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-				free_list_l(&lexer_list);
-				free(parser_list);
-				return (NULL);
-			}
 			node = create_node_p();
-			node->nbr_red = 0;
 			add_to_end_p(&parser_list, node);
 			temp = temp->next;
-			nbr_commands_and_pipes++;
 		}
 		else
-		{
 			temp = temp->next;
-			nbr_commands_and_pipes++;
-		}
 	}
+	return (parser_list);
+}
+
+t_parser *parsing(char *string, char **envp, int exit_stat)
+{
+	t_lexer		*lexer_list;
+	t_parser	*parser_list;
+	t_parser	*node;
+
+	parser_list = NULL;
+	lexer_list = lexing(string);
+	if (lexer_list == NULL)
+		return (NULL);
+	if ((parsing_error(lexer_list)) == 1)
+		return (NULL);
+	node = create_node_p();
+	add_to_end_p(&parser_list, node);
+	parser_list = put_red_in_parser(lexer_list, parser_list, node);
+	if (parser_list == NULL)
+		return (NULL);
 	lexer_list = expander(lexer_list, envp, exit_stat);
 	parser_list = create_2d_array_per_node(parser_list, lexer_list);
 	free_list_l(&lexer_list);

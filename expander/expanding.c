@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/20 13:59:21 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:47:42 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,75 +18,40 @@ char	*get_expanded_var(size_t len_var, char *word, int start, char **envp)
 	char	*exp_var;
 	int		i;
 	int		j;
-	int		len_after_equal;
-	size_t	len_before_equal;
+	size_t	len;
+	char	*var_in_env;
 
 	i = 0;
 	exp_var = NULL;
-	len_before_equal = 0;
-	len_after_equal = 0;
-	var = ft_substr(word, start, len_var);
+	var = ft_substr(word, start, len_var); // USER
 	if (var == NULL)
 		return (NULL);
 	while (envp[i])
 	{
-		if ((ft_strncmp(envp[i], var, ft_strlen(var))) == 0)
+		len = 0;
+		while (envp[i][len])
 		{
-			while (envp[i][len_before_equal] && envp[i][len_before_equal] != '=')
-				len_before_equal++;
-			if (len_before_equal != ft_strlen(var))
-			{
-				free(var);
-				return (NULL);
-			}
+			if (envp[i][len] == '=')
+				break ;
+			len++;
+		}
+		if (((ft_strncmp(envp[i], var, ft_strlen(var))) == 0) && (ft_strlen(var) == len))
+		{
 			j = 0;
 			while (envp[i][j])
 			{
-				if (envp[i][j] == '=')
+				if (ft_strchr(&envp[i][j], '='))
 				{
-					j++;
-					while (envp[i][j])
-					{
-						len_after_equal++;
-						j++;
-					}
+					exp_var = ft_strchr(&envp[i][j], '=');
+					free(var);
+					return (exp_var);
 				}
-				if (len_after_equal != 0)
-					break ;
 				j++;
 			}
-			if (len_after_equal != 0)
-				break ;
 		}
 		i++;
 	}
-	if (len_after_equal == 0)
-	{
-		free(var);
-		return (NULL);
-	}
-	i = 0;
-	while (envp[i])
-	{
-		if ((ft_strncmp(envp[i], var, ft_strlen(var))) == 0)
-		{
-			j = 0;
-			while (envp[i][j])
-			{
-				if (envp[i][j] == '=')
-				{
-					j++;
-					exp_var = ft_substr(envp[i], j, len_after_equal);
-					break ;
-				}
-				j++;			
-			}
-			break ;
-		}
-		i++;
-	}
-	free (var);
-	return (exp_var);
+	return (free(var), exp_var);
 }
 
 size_t	get_len_new_word(char *exp_var, char *word, size_t len_var)
@@ -234,7 +199,7 @@ char	*actions_if_dollar_found(char *word, int *i, char **envp, int exit_stat)
 		new_word = word;
 		*i = start - 1;
 	}
-	free(exp_var);
+	// free(exp_var);
 	return (new_word);
 }
 
