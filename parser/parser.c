@@ -23,7 +23,8 @@ int	parsing_error(t_lexer *lexer_list)
 		free_list_l(&lexer_list);
 		return (1);
 	}
-	if (lexer_list->token != -1 && (lexer_list->next == NULL || lexer_list->next->word == NULL))
+	if (lexer_list->token != -1 && (lexer_list->next == NULL \
+	|| lexer_list->next->word == NULL))
 	{
 		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 		free_list_l(&lexer_list);
@@ -67,7 +68,8 @@ t_lexer	*add_redirection(t_lexer **node_red, t_lexer *temp, t_parser **node)
 	return (temp);
 }
 
-int	error_redirections(t_lexer *temp, t_lexer *lexer_list, t_parser *parser_list)
+int	error_redirections(t_lexer *temp, t_lexer *lexer_list, \
+t_parser *parser_list)
 {
 	if ((temp->next == NULL) || (temp->next->word == NULL))
 	{
@@ -79,7 +81,8 @@ int	error_redirections(t_lexer *temp, t_lexer *lexer_list, t_parser *parser_list
 	return (0);
 }
 
-t_parser	*put_red_in_parser(t_lexer *lexer_list, t_parser *parser_list, t_parser *node)
+int	put_red_in_parser(t_lexer *lexer_list, \
+t_parser **parser_list, t_parser *node)
 {
 	t_lexer		*temp;
 	t_lexer		*node_red;
@@ -87,48 +90,47 @@ t_parser	*put_red_in_parser(t_lexer *lexer_list, t_parser *parser_list, t_parser
 	temp = lexer_list;
 	while (temp != NULL)
 	{
-		if (temp->token == IN || temp->token == OUT || temp->token == ININ || temp->token == OUTOUT)
+		if ((temp->token >= 0) && (temp->token <= 3))
 		{
-			if ((error_redirections(temp, lexer_list, parser_list)) == 1)
-				return (NULL);
+			if ((error_redirections(temp, lexer_list, *parser_list)) == 1)
+				return (1);
 			else
 				temp = add_redirection(&node_red, temp, &node);
 		}
 		else if (temp->token == PIPE)
 		{
-			if ((pipe_error(temp, lexer_list, parser_list) == 1))
-				return (NULL);
+			if ((pipe_error(temp, lexer_list, *parser_list) == 1))
+				return (1);
 			node = create_node_p();
-			add_to_end_p(&parser_list, node);
+			add_to_end_p(parser_list, node);
 			temp = temp->next;
 		}
 		else
 			temp = temp->next;
 	}
-	return (parser_list);
+	return (0);
 }
 
-t_parser *parsing(char *string, char **envp, int exit_stat)
+int	parsing(t_parser **parser_list, char *string, char **envp, int exit_stat)
 {
 	t_lexer		*lexer_list;
-	t_parser	*parser_list;
 	t_parser	*node;
 
-	parser_list = NULL;
 	lexer_list = lexing(string);
 	if (lexer_list == NULL)
-		return (NULL);
+		return (1);
 	if ((parsing_error(lexer_list)) == 1)
-		return (NULL);
+		return (1);
 	node = create_node_p();
-	add_to_end_p(&parser_list, node);
-	parser_list = put_red_in_parser(lexer_list, parser_list, node);
-	if (parser_list == NULL)
-		return (NULL);
+	add_to_end_p(parser_list, node);
+	if ((put_red_in_parser(lexer_list, parser_list, node)) == 1)
+		return (1);
 	lexer_list = expander(lexer_list, envp, exit_stat);
 	if (lexer_list == NULL)
-		return (NULL);
-	parser_list = create_2d_array_per_node(parser_list, lexer_list);
+		return (free_list_p(parser_list), 1);
+	*parser_list = create_2d_array_per_node(*parser_list, lexer_list);
+	if (*parser_list == NULL)
+		return (free_list_l(&lexer_list), 1);
 	free_list_l(&lexer_list);
-	return (parser_list);
+	return (0);
 }

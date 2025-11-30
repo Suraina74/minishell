@@ -31,7 +31,7 @@ t_lexer	*create_node_l(char *string)
 		node->token = OUTOUT;
 	else if (ft_strlen(string) == 1 && string[0] == '|')
 		node->token = PIPE;
-	else 
+	else
 		node->word = ft_strdup(string);
 	node->next = NULL;
 	return (node);

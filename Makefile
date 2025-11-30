@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-SRCS = minishell.c lexer/lexer.c lexer/lexer_list_func.c parser/parser.c \
+SRCS = minishell.c check_input.c lexer/lexer.c lexer/lexer_list_func.c parser/parser.c \
 parser/parser_list_func.c parser/manipulate_parser_list.c \
 executer/exe_cmd.c executer/execute_pipes_l.c executer/execute_pipes_ll.c executer/path_builder.c expander/expanding.c \
 expander/empty_quotes_delete.c expander/empty_quotes_len.c \

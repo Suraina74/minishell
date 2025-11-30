@@ -97,7 +97,11 @@ t_lexer	*del_empty_strings(t_lexer *lexer_list)
 		{
 			len = len_without_empty_strings(temp->word);
 			if (len != ft_strlen(temp->word))
+			{
 				temp->word = string_without_empty_quotes(temp->word, len);
+				if (temp->word == NULL)
+					return (free_list_l(&lexer_list), NULL);
+			}
 		}
 		temp = temp->next;
 	}

@@ -26,7 +26,7 @@ t_parser	*create_node_p(void)
 	return (node);
 }
 
-t_lexer	*create_node_red()
+t_lexer	*create_node_red(void)
 {
 	t_lexer	*node;
 

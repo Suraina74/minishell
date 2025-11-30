@@ -101,7 +101,10 @@ int	main(int ac, char **av, char **envp)
 		rl = readline("minishell > ");
 		if (rl == NULL)
 			break ;
-		parser_list = parsing(rl, envp_new, exit_stat);
+		if ((check_input(rl)) == 1)
+			parser_list = NULL;
+		else if ((parsing(&parser_list, rl, envp_new, exit_stat)) == 1)
+			return (free_list_p(&parser_list), free_copy_envp(&envp_new), free(rl), 1);
 		exit_stat = execute_pipes(parser_list, &envp_new);
 		if (rl[0] != '\0')
 			add_history(rl);
