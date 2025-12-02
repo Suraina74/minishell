@@ -12,9 +12,9 @@
 
 #include "../mini.h"
 
-int build_in_env(char ***envp)
+int	build_in_env(char ***envp)
 {
-	int i;
+	int	i;
 	int	j;
 
 	i = 0;

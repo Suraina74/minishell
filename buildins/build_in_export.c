@@ -12,11 +12,9 @@
 
 #include "../mini.h"
 
-int	compare_var_name(char *env_var, char *word)
+int	get_len_word(char *word)
 {
-	int 	len;
-	char	*var_in_env;
-	char	*var_in_word;
+	int	len;
 
 	len = 0;
 	while (word[len])
@@ -25,27 +23,31 @@ int	compare_var_name(char *env_var, char *word)
 			break ;
 		len++;
 	}
+	return (len);
+}
+
+int	compare_var_name(char *env_var, char *word)
+{
+	int		len;
+	char	*var_in_env;
+	char	*var_in_word;
+
+	len = get_len_word(word);
 	var_in_word = ft_substr(word, 0, len);
 	if (var_in_word == NULL)
 		return (1);
-	len = 0;
-	while (env_var[len])
-	{
-		if (env_var[len] == '=')
-			break ;
-		len++;
-	}
+	len = get_len_word(env_var);
 	var_in_env = ft_substr(env_var, 0, len);
 	if (var_in_env == NULL)
 		return (free(var_in_word), 1);
-	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0) && (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
-			return (free(var_in_env), free(var_in_word), 0);
+	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0) \
+	&& (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
+		return (free(var_in_env), free(var_in_word), 0);
 	return (free(var_in_env), free(var_in_word), 1);
 }
 
-char	*change_content_var(char *env_var, char *word)
+int	change_content_var(char *env_var, char *word, char **var)
 {
-	char	*new_var;
 	int		i;
 	char	*empty_string;
 
@@ -57,35 +59,34 @@ char	*change_content_var(char *env_var, char *word)
 			if ((word[i] == '=') && (word[i + 1] == '\0'))
 			{
 				empty_string = "\"\"";
-				new_var = ft_strjoin(word, empty_string);
-				if (new_var == NULL)
-					return (NULL);
-				return (new_var);
+				*var = ft_strjoin(word, empty_string);
+				if (*var == NULL)
+					return (1);
+				return (0);
 			}
 			i++;
 		}
-		new_var = ft_strdup(word);
-		return (new_var);
+		*var = ft_strdup(word);
+		if (*var == NULL)
+			return (1);
+		return (0);
 	}
-	return (env_var);
+	return (0);
 }
 
-int	change_existing_var(char *word, char ***envp)
+int	change_existing_var(char *word, char ***envp, char **var)
 {
-	char		*new_var;
 	int			j;
 
 	j = 0;
 	while ((*envp)[j])
 	{
-		new_var = change_content_var((*envp)[j], word);
-		if (new_var == NULL)
-			return (-1);
-		if (compare_var_name((*envp)[j], word) == 0)
+		if ((change_content_var((*envp)[j], word, &(*var))) == 1)
+			return (1);
+		if (*var != NULL)
 		{
 			free((*envp)[j]);
-			(*envp)[j] = new_var;
-			return (1);
+			(*envp)[j] = *var;
 		}
 		j++;
 	}
@@ -99,27 +100,13 @@ int	check_if_changed_var(char *word, char *envp_var)
 	return (0);
 }
 
-char	**add_new_vars(char ***envp, char *word, int var_count)
+int	ending_with_equal_sign(char *word, char ***envp_new, size_t *i)
 {
-	size_t		i;
-	int			j;
-	char		**envp_new;
-	char		*empty_string;
-	char		*new_word;
+	int		j;
+	char	*new_word;
+	char	*empty_string;
 
-	i = 0;
 	j = 0;
-	envp_new = NULL;
-	envp_new = (char **) malloc((var_count + 2) * sizeof (char *));
-	if (envp_new == NULL)
-		return (NULL);
-	while ((*envp)[i])
-	{
-		envp_new[i] = ft_strdup((*envp)[i]);
-		if (envp_new[i] == NULL)
-			return (NULL);
-		i++;
-	}
 	while (word[j])
 	{
 		if ((word[j] == '=') && (word[j + 1] == '\0'))
@@ -128,63 +115,71 @@ char	**add_new_vars(char ***envp, char *word, int var_count)
 			new_word = ft_strjoin(word, empty_string);
 			if (new_word == NULL)
 			{
-				free_copy_envp(&envp_new);
-				return (NULL);
+				free_copy_envp(envp_new);
+				return (1);
 			}
-			envp_new[i] = new_word;
-			envp_new[i + 1] = NULL;
-			return (envp_new);
+			(*envp_new)[(*i)] = new_word;
+			*i = *i + 1;
+			(*envp_new)[(*i)] = NULL;
+			return (0);
 		}
 		j++;
 	}
-	envp_new[i] = ft_strdup(word);
-	if (envp_new[i] == NULL)
+	return (0);
+}
+
+int	copy_envp_to_new_envp(char ***envp, char ***envp_new, size_t *i)
+{
+	while ((*envp)[(*i)])
 	{
-		free_copy_envp(&envp_new);
-		return (NULL);
+		(*envp_new)[(*i)] = ft_strdup((*envp)[(*i)]);
+		if ((*envp_new)[(*i)] == NULL)
+			return (free_copy_envp(envp_new), 1);
+		(*i)++;
 	}
-	envp_new[i + 1] = NULL;
-	return (envp_new);
+	return (0);
+}
+
+int	add_new_vars(char ***envp, char *word, char ***envp_new)
+{
+	size_t		i;
+	int			var_count;
+
+	i = 0;
+	var_count = 0;
+	while ((*envp)[var_count])
+		var_count++;
+	*envp_new = (char **) malloc((var_count + 2) * sizeof (char *));
+	if (*envp_new == NULL)
+		return (1);
+	if ((copy_envp_to_new_envp(envp, envp_new, &i)) == 1)
+		return (1);
+	if ((ending_with_equal_sign(word, envp_new, &i)) == 1)
+		return (1);
+	if ((*envp_new)[i] == NULL)
+		return (free_copy_envp(envp), 0);
+	(*envp_new)[i] = ft_strdup(word);
+	if ((*envp_new)[i] == NULL)
+	{
+		free_copy_envp(envp_new);
+		return (1);
+	}
+	(*envp_new)[i + 1] = NULL;
+	free_copy_envp(envp);
+	return (0);
 }
 
 int	check_if_valid(char *word)
 {
-	int	i;
-	int 	len_before_equal;
-	char	*var_in_word;
-	bool	equal_sign;
+	int		i;
 
 	i = 0;
-	equal_sign = false;
-	len_before_equal = 0;
-	var_in_word = NULL;
 	if (ft_isalpha(word[0]) == 1)
 	{
 		printf("export: `%s': not a valid identifier\n", word);
 		return (1);
 	}
-	if (ft_strchr(word, '=') != NULL)
-		equal_sign = true;
-	if (equal_sign == true)
-	{
-		while (word[len_before_equal] != '=')
-			len_before_equal++;
-		var_in_word = ft_substr(word, 0, len_before_equal);
-		if (var_in_word == NULL)
-			return (1);
-		while (var_in_word[i])
-		{
-			if ((ft_isalnum(var_in_word[i])) == 1)
-			{
-				printf("export: `%s': not a valid identifier\n", word);
-				return (free(var_in_word), 1);
-			}
-			i++;
-		}
-		return (free(var_in_word), 0);
-	}
-	i = 0;
-	while (word[i])
+	while (word[i] != '\0' && word[i] != '=')
 	{
 		if ((ft_isalnum(word[i])) == 1)
 		{
@@ -196,50 +191,50 @@ int	check_if_valid(char *word)
 	return (0);
 }
 
+int	only_export(t_parser *tmp, char ***envp)
+{
+	int	i;
+	int	words_in_node;
+
+	i = 0;
+	words_in_node = 0;
+	while (tmp->words[words_in_node])
+		words_in_node++;
+	if (words_in_node == 1)
+	{
+		while ((*envp)[i])
+		{
+			printf("%s\n", (*envp)[i]);
+			i++;
+		}
+		return (0);
+	}
+	return (1);
+}
+
 int	build_in_export(t_parser *parser_list, char ***envp)
 {
-	t_parser	*tmp;     
-    int		     words_in_node;
-	size_t		var_count;
-	int			changed_var;
+	t_parser	*tmp;
+	char		*var;
 	char		**envp_new;
 	int			i;
 
-	words_in_node = 0;
-	envp_new = NULL;
 	tmp = parser_list;
-	i = 0;
-	// sort(var_count, export);
-    while (tmp->words[words_in_node])
-    	words_in_node++;
-    if (words_in_node == 1)
-    {
-        while ((*envp)[i])
-	    {
-		    printf("%s\n", (*envp)[i]);
-            i++;
-		}
-        return (0);
-    }
+	var = NULL;
 	i = 1;
+	if ((only_export(tmp, envp)) == 0)
+		return (0);
 	while (tmp->words[i])
 	{
-		var_count = 0;
-		while ((*envp)[var_count])
-			var_count++;
 		if (check_if_valid(tmp->words[i]) == 1)
 			return (1);
-		changed_var = change_existing_var(tmp->words[i], envp);
-		if (changed_var == -1)
+		if ((change_existing_var(tmp->words[i], envp, &var)) == 1)
 			return (1);
-		if (changed_var == 0)
+		if (var == NULL)
 		{
-			envp_new = add_new_vars(envp, tmp->words[i], var_count);
-			free_copy_envp(envp);
-			if (envp_new == NULL)
+			if ((add_new_vars(envp, tmp->words[i], &envp_new)) == 1)
 				return (1);
-			else
-				*envp = envp_new;
+			*envp = envp_new;
 		}
 		i++;
 	}
