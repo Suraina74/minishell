@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:05:27 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:36:11 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ void				free_list_p(t_parser **parser_list);
 t_lexer				*del_empty_strings(t_lexer *lexer_list);
 t_parser			*create_2d_array_per_node(t_parser *parser_list,
 						t_lexer *lexer_list);
+int					put_red_in_parser(t_lexer *lexer_list,
+						t_parser **parser_list, t_parser *node);
 t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
 int					execute_buildin(t_parser *parser_list, char ***envp);
@@ -88,6 +90,8 @@ int					build_in_cd(char **path);
 int					build_in_pwd(void);
 int					build_in_exit(int exit_stat, t_parser *parser_list);
 int					build_in_export(t_parser *parser_list, char ***envp);
+int					change_existing_var(char *word, char ***envp, char **var);
+int					add_new_vars(char ***envp, char *word, char ***envp_new);
 void				free_copy_envp(char ***envp_new);
 int					build_in_unset(t_parser *parser_list, char ***envp);
 int					build_in_env(char ***envp);
