@@ -12,9 +12,18 @@
 
 #include "../mini.h"
 
-char	**delete_var(int i, char ***envp)
+int	copy_envp_for_unset(char ***envp_new, char ***envp, int *j, int *k)
 {
-	char	**envp_new;
+	(*envp_new)[*j] = ft_strdup((*envp)[*k]);
+	if ((*envp_new)[*j] == NULL)
+		return (1);
+	(*j)++;
+	(*k)++;
+	return (0);
+}
+
+int	delete_var(int i, char ***envp, char ***envp_new)
+{
 	int		var_count;
 	int		j;
 	int		k;
@@ -24,30 +33,36 @@ char	**delete_var(int i, char ***envp)
 	k = 0;
 	while ((*envp)[var_count])
 		var_count++;
-	envp_new = (char **) malloc((var_count - 1 + 1) * sizeof(char *));
-	if (envp_new == NULL)
-		return (NULL);
-	while ((*envp)[k])
+	*envp_new = (char **) malloc((var_count - 1 + 1) * sizeof(char *));
+	if (*envp_new == NULL)
+		return (1);
+	while ((*envp)[k] && k != i)
 	{
-		if (k == i)
-			break ;
-		envp_new[j] = ft_strdup((*envp)[k]);
-		if (envp_new[j] == NULL)
-			return (NULL);
-		j++;
-		k++;
+		if ((copy_envp_for_unset(envp_new, envp, &j, &k)) == 1)
+			return (1);
 	}
 	k++;
 	while ((*envp)[k])
 	{
-		envp_new[j] = ft_strdup((*envp)[k]);
-		if (envp_new[j] == NULL)
-			return (NULL);
-		j++;
-		k++;
+		if ((copy_envp_for_unset(envp_new, envp, &j, &k)) == 1)
+			return (1);
 	}
-	envp_new[j] = NULL;
-	return (envp_new);
+	(*envp_new)[j] = NULL;
+	return (0);
+}
+
+int	get_len_var(char ***envp, int i)
+{
+	int	len;
+
+	len = 0;
+	while ((*envp)[i][len])
+	{
+		if ((*envp)[i][len] == '=')
+			break ;
+		len++;
+	}
+	return (len);
 }
 
 int	check_and_delete_var(char *word, char ***envp, char ***envp_new)
@@ -59,29 +74,21 @@ int	check_and_delete_var(char *word, char ***envp, char ***envp_new)
 	i = 0;
 	while ((*envp)[i])
 	{
-		len = 0;
-		while ((*envp)[i][len])
-		{
-			if ((*envp)[i][len] == '=')
-				break ;
-			len++;
-		}
+		len = get_len_var(envp, i);
 		var_in_env = ft_substr((*envp)[i], 0, len);
 		if (var_in_env == NULL)
-			return (-1);
+			return (1);
 		if (((ft_strncmp(var_in_env, word, ft_strlen(word))) == 0) \
-		 && (ft_strlen(word) == ft_strlen(var_in_env)))
+		&& (ft_strlen(word) == ft_strlen(var_in_env)))
 		{
-			(*envp_new) = delete_var(i, envp);
-			free(var_in_env);
-			if ((*envp_new) == NULL)
-				return (-1);
-			return (0);
+			if ((delete_var(i, envp, envp_new)) == 1)
+				return (free(var_in_env), 1);
+			return (free(var_in_env), 0);
 		}
 		free(var_in_env);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 int	build_in_unset(t_parser *parser_list, char ***envp)
@@ -89,21 +96,19 @@ int	build_in_unset(t_parser *parser_list, char ***envp)
 	char		**envp_new;
 	t_parser	*tmp;
 	int			i;
-	int			ret_value;
 
 	envp_new = NULL;
 	tmp = parser_list;
 	i = 1;
 	while (tmp->words[i])
 	{
-		ret_value = check_and_delete_var(tmp->words[i], envp, &envp_new);
-		if (ret_value == 0)
+		if ((check_and_delete_var(tmp->words[i], envp, &envp_new)) == 1)
+			return (1);
+		if (envp_new)
 		{
 			free_copy_envp(envp);
 			*envp = envp_new;
 		}
-		else if (ret_value == -1)
-			return (1);
 		i++;
 	}
 	return (0);
