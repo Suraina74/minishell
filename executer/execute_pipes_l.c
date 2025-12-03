@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 18:43:22 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 18:56:12 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,7 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-	if (prev_in != -1)
-		close(prev_in);
-	if (tmp->next)
-	{
-		close(pipe_hand->fd[1]);
-		prev_in = pipe_hand->fd[0];
-	}
+	close_fds(tmp, pipe_hand, &prev_in);
 }
 
 void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
@@ -92,9 +86,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		char ***envp)
 {
 	t_utils_pipe	*current;
-	pid_t			p;
 	pid_t			last_pid;
-	int				status;
 
 	while (tmp)
 	{
@@ -113,14 +105,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		tmp = tmp->next;
 	}
 	current = pipe_hand;
-	while (1)
-	{
-		p = waitpid(-1, &status, 0);
-		if (p <= 0)
-			break ;
-		if (p == last_pid)
-			*exit_stat = WEXITSTATUS(status);
-	}
+	last_cmd_stat(last_pid, exit_stat);
 }
 
 int	execute_pipes(t_parser *parser_list, char ***envp)

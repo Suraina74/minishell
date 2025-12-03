@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer_utils.c                                   :+:      :+:    :+:   */
+/*   executer_utils_l.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 17:33:46 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:01:01 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,20 @@ void	set_stat(int *exit_stat, char *command, char *full_path)
 			ft_putendl_fd(": command not found", 2);
 			*exit_stat = 127;
 		}
+	}
+}
+
+void	last_cmd_stat(pid_t last_pid, int *exit_stat)
+{
+	pid_t	check;
+	int		status;
+
+	while (1)
+	{
+		check = waitpid(-1, &status, 0);
+		if (check <= 0)
+			break ;
+		if (check == last_pid)
+			*exit_stat = WEXITSTATUS(status);
 	}
 }
