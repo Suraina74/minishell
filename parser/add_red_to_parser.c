@@ -6,26 +6,28 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 13:34:12 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/03 13:34:58 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 16:23:18 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int	pipe_error(t_lexer *temp, t_lexer *lexer_list, t_parser *parser_list)
+int	pipe_error(t_lexer *temp, t_lexer **lexer_list, t_parser **parser_list)
 {
 	if (temp->next == NULL)
 	{
 		ft_putendl_fd("syntax error near unexpected token `|'", 2);
-		free(parser_list);
-		free_list_l(&lexer_list);
+		free(*parser_list);
+		*parser_list = NULL;
+		free_list_l(lexer_list);
 		return (1);
 	}
 	if (temp->next->word == NULL)
 	{
 		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-		free_list_l(&lexer_list);
-		free(parser_list);
+		free_list_l(lexer_list);
+		free(*parser_list);
+		*parser_list = NULL;
 		return (1);
 	}
 	return (0);
@@ -47,20 +49,21 @@ t_lexer	*add_redirection(t_lexer **node_red, t_lexer *temp, t_parser **node)
 	return (temp);
 }
 
-int	error_redirections(t_lexer *temp, t_lexer *lexer_list, \
-t_parser *parser_list)
+int	error_redirections(t_lexer *temp, t_lexer **lexer_list, \
+t_parser **parser_list)
 {
 	if ((temp->next == NULL) || (temp->next->word == NULL))
 	{
-		free_list_l(&lexer_list);
-		free(parser_list);
+		free_list_l(lexer_list);
+		free(*parser_list);
+		*parser_list = NULL;
 		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 		return (1);
 	}
 	return (0);
 }
 
-int	put_red_in_parser(t_lexer *lexer_list, \
+void	put_red_in_parser(t_lexer *lexer_list, \
 t_parser **parser_list, t_parser *node)
 {
 	t_lexer		*temp;
@@ -71,15 +74,15 @@ t_parser **parser_list, t_parser *node)
 	{
 		if ((temp->token >= 0) && (temp->token <= 3))
 		{
-			if ((error_redirections(temp, lexer_list, *parser_list)) == 1)
-				return (1);
+			if ((error_redirections(temp, &lexer_list, parser_list)) == 1)
+				break ;
 			else
 				temp = add_redirection(&node_red, temp, &node);
 		}
 		else if (temp->token == PIPE)
 		{
-			if ((pipe_error(temp, lexer_list, *parser_list) == 1))
-				return (1);
+			if ((pipe_error(temp, &lexer_list, parser_list) == 1))
+				break ;
 			node = create_node_p();
 			add_to_end_p(parser_list, node);
 			temp = temp->next;
@@ -87,5 +90,4 @@ t_parser **parser_list, t_parser *node)
 		else
 			temp = temp->next;
 	}
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/03 13:34:43 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 16:23:37 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,12 @@ int	parsing(t_parser **parser_list, char *string, char **envp, int exit_stat)
 	if (lexer_list == NULL)
 		return (1);
 	if ((parsing_error(lexer_list)) == 1)
-		return (1);
+		return (0);
 	node = create_node_p();
 	add_to_end_p(parser_list, node);
-	if ((put_red_in_parser(lexer_list, parser_list, node)) == 1)
-		return (1);
+	put_red_in_parser(lexer_list, parser_list, node);
+	if (*parser_list == NULL)
+		return (0);
 	lexer_list = expander(lexer_list, envp, exit_stat);
 	if (lexer_list == NULL)
 		return (free_list_p(parser_list), 1);

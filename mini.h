@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:53:17 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 16:23:59 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void				free_list_p(t_parser **parser_list);
 t_lexer				*del_empty_strings(t_lexer *lexer_list);
 t_parser			*create_2d_array_per_node(t_parser *parser_list,
 						t_lexer *lexer_list);
-int					put_red_in_parser(t_lexer *lexer_list,
+void				put_red_in_parser(t_lexer *lexer_list,
 						t_parser **parser_list, t_parser *node);
 t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
