@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 16:23:59 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:47:10 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ typedef struct s_utils_pipe
 }					t_utils_pipe;
 
 void				ft_free_path(char **arr);
-char				**x_path(char **envp, char *command);
 int					execute_pipes(t_parser *parser_list, char ***envp);
 int					check_input(char *string);
 t_lexer				*create_node_l(char *string);
@@ -96,9 +95,9 @@ void				free_copy_envp(char ***envp_new);
 int					build_in_unset(t_parser *parser_list, char ***envp);
 int					build_in_env(char ***envp);
 int					build_in_flag(t_parser *parser_list);
-void				execute_fun(t_parser *tmp, char ***envp);
+void				execute_fun(t_parser *tmp, int *exit_stat, char ***envp);
 void				init_child_proc(t_parser *tmp, int *prev_in,
-						t_utils_pipe *pipe_hand, char ***envp);
+						t_utils_pipe *pipe_hand, char ***envp, int *exit_stat);
 void				init_cmd(t_utils_pipe **cmd_struct);
 void				heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand);
 void				pick_redirections(t_utils_pipe *pipe_hand,
@@ -109,5 +108,6 @@ void				init_pipe(int *fd);
 void				handle_single_build_in(t_utils_pipe *pipe_hand,
 						t_parser *tmp, char ***envp);
 void				set_stat(int *exit_stat, char *command, char *full_path);
+char				**x_path(char **envp, char *command, int *exit_stat);
 
 #endif

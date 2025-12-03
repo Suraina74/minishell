@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:46:43 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 18:12:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	child_setup_fds(t_utils_pipe *pipe_hand, int prev_in, int is_last)
 }
 
 void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
-		char ***envp)
+		char ***envp, int *exit_stat)
 {
 	int	is_last;
 
@@ -40,8 +40,8 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 		if (build_in_flag(tmp))
 			execute_buildin(tmp, envp);
 		else
-			execute_fun(tmp, envp);
-		exit(0);
+			execute_fun(tmp, exit_stat, envp);
+		exit(*exit_stat);
 	}
 	else if (pipe_hand->child_proc < 0)
 	{
@@ -88,8 +88,12 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		char ***envp)
 {
 	t_utils_pipe	*current;
+	pid_t			p;
+	pid_t			last_pid;
 	int				prev_in;
+	int				status;
 
+	last_pid = -1;
 	prev_in = -1;
 	while (tmp)
 	{
@@ -98,7 +102,9 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		pick_redirections(pipe_hand, tmp);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
-		init_child_proc(tmp, &prev_in, pipe_hand, envp);
+		init_child_proc(tmp, &prev_in, pipe_hand, envp, exit_stat);
+		if (tmp->next == NULL)
+			last_pid = pipe_hand->child_proc;
 		if (pipe_hand->fd_in != -1)
 			close(pipe_hand->fd_in);
 		if (pipe_hand->fd_out != -1)
@@ -106,10 +112,11 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		tmp = tmp->next;
 	}
 	current = pipe_hand;
-	waitpid(current->child_proc, exit_stat, 0);
-	while (waitpid(-1, exit_stat, 0) > 0)
-		;
-	*exit_stat = WEXITSTATUS(*exit_stat);
+	while ((p = waitpid(-1, &status, 0)) > 0)
+	{
+		if (p == last_pid)
+			*exit_stat = WEXITSTATUS(status);
+	}
 }
 
 int	execute_pipes(t_parser *parser_list, char ***envp)

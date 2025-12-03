@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:53:32 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:33:46 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,5 @@ void	set_stat(int *exit_stat, char *command, char *full_path)
 			ft_putendl_fd(": command not found", 2);
 			*exit_stat = 127;
 		}
-		exit(*exit_stat);
 	}
 }
