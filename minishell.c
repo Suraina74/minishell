@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 19:17:49 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 12:55:29 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	main(int ac, char **av, char **envp)
 	exit_stat = 0;
 	(void)ac;
 	(void)av;
+	parser_list = NULL;
 	envp_new = copy_envp(envp);
 	if (envp_new == NULL)
 		return (1);
