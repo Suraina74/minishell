@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:36:11 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:53:17 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,5 +108,6 @@ void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);
 void				init_pipe(int *fd);
 void				handle_single_build_in(t_utils_pipe *pipe_hand,
 						t_parser *tmp, char ***envp);
+void				set_stat(int *exit_stat, char *command, char *full_path);
 
 #endif

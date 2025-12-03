@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:37:55 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:53:32 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,23 @@ void	ft_free_path(char **arr)
 	while (arr[i] != NULL)
 		free(arr[i++]);
 	free(arr);
+}
+
+void	set_stat(int *exit_stat, char *command, char *full_path)
+{
+	if ((access(full_path, X_OK) == -1) || (access(full_path, F_OK) == -1))
+	{
+		ft_putstr_fd(command, 2);
+		if ((access(full_path, X_OK) == -1))
+		{
+			ft_putendl_fd(": Permission denied", 2);
+			*exit_stat = 126;
+		}
+		if ((access(full_path, F_OK) == -1))
+		{
+			ft_putendl_fd(": command not found", 2);
+			*exit_stat = 127;
+		}
+		exit(*exit_stat);
+	}
 }

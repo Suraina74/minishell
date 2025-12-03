@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:56:13 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:46:43 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,6 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 	}
 }
 
-/**
- * @brief handles one build-in, redirects and restores fds once it is
- * done.
-*/
 void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 		char ***envp)
 {

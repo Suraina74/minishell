@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 09:29:27 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 11:54:40 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:52:55 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static char	*get_full_path(char **envp, char *command)
 	{
 		ft_putstr_fd("Command not found: ", 2);
 		ft_putendl_fd(command, 2);
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 	return (ft_free_path(paths), full_path);
 }
@@ -102,12 +102,14 @@ char	**x_path(char **envp, char *command)
 {
 	char	**result;
 	char	*full_path;
+	int		exit_stat;
 
+	exit_stat = 0;
 	if (command[0] == ' ' || command[0] == '\0')
 	{
 		ft_putstr_fd(command, 2);
 		ft_putendl_fd(": command not found", 2);
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 	result = ft_split(command, ' ');
 	if (result == NULL || result[0] == NULL)
@@ -115,12 +117,7 @@ char	**x_path(char **envp, char *command)
 	full_path = get_full_path(envp, result[0]);
 	if (full_path == NULL)
 		return (ft_free_path(result), NULL);
-	if ((access(full_path, X_OK) == -1) || (access(full_path, F_OK) == -1))
-	{
-		ft_putstr_fd(command, 2);
-		ft_putendl_fd(": No such file or directory", 2);
-		exit(EXIT_FAILURE);
-	}
+	set_stat(&exit_stat, command, full_path);
 	free(result[0]);
 	result[0] = full_path;
 	return (result);

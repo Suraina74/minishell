@@ -6,18 +6,11 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 19:46:24 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 14:00:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-/**
- * @brief heredoc
- *
- * @param delim is the EOF
- * @param line reads stdin until delim is found
-*/
 
 void	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand)
 {
