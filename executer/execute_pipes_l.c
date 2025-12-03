@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 18:12:08 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 18:43:22 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,20 @@ void	child_setup_fds(t_utils_pipe *pipe_hand, int prev_in, int is_last)
 		close(pipe_hand->fd[1]);
 }
 
-void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
-		char ***envp, int *exit_stat)
+void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
+		int *exit_stat)
 {
 	int	is_last;
+	int	prev_in;
 
+	prev_in = -1;
+	is_last = 0;
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
-		is_last = (tmp->next == NULL);
-		child_setup_fds(pipe_hand, *prev_in, is_last);
+		if (tmp->next == NULL)
+			is_last = 1;
+		child_setup_fds(pipe_hand, prev_in, is_last);
 		if (build_in_flag(tmp))
 			execute_buildin(tmp, envp);
 		else
@@ -48,12 +52,12 @@ void	init_child_proc(t_parser *tmp, int *prev_in, t_utils_pipe *pipe_hand,
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-	if (*prev_in != -1)
-		close(*prev_in);
+	if (prev_in != -1)
+		close(prev_in);
 	if (tmp->next)
 	{
 		close(pipe_hand->fd[1]);
-		*prev_in = pipe_hand->fd[0];
+		prev_in = pipe_hand->fd[0];
 	}
 }
 
@@ -90,11 +94,8 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 	t_utils_pipe	*current;
 	pid_t			p;
 	pid_t			last_pid;
-	int				prev_in;
 	int				status;
 
-	last_pid = -1;
-	prev_in = -1;
 	while (tmp)
 	{
 		pipe_hand->fd_in = -1;
@@ -102,7 +103,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		pick_redirections(pipe_hand, tmp);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
-		init_child_proc(tmp, &prev_in, pipe_hand, envp, exit_stat);
+		init_child_proc(tmp, pipe_hand, envp, exit_stat);
 		if (tmp->next == NULL)
 			last_pid = pipe_hand->child_proc;
 		if (pipe_hand->fd_in != -1)
@@ -112,8 +113,11 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		tmp = tmp->next;
 	}
 	current = pipe_hand;
-	while ((p = waitpid(-1, &status, 0)) > 0)
+	while (1)
 	{
+		p = waitpid(-1, &status, 0);
+		if (p <= 0)
+			break ;
 		if (p == last_pid)
 			*exit_stat = WEXITSTATUS(status);
 	}

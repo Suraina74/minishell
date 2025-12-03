@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 17:47:10 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 18:42:00 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int					build_in_unset(t_parser *parser_list, char ***envp);
 int					build_in_env(char ***envp);
 int					build_in_flag(t_parser *parser_list);
 void				execute_fun(t_parser *tmp, int *exit_stat, char ***envp);
-void				init_child_proc(t_parser *tmp, int *prev_in,
+void				init_child_proc(t_parser *tmp,
 						t_utils_pipe *pipe_hand, char ***envp, int *exit_stat);
 void				init_cmd(t_utils_pipe **cmd_struct);
 void				heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand);
