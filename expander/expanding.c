@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 21:50:00 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:12:24 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	get_expanded_var(char *var, char **envp, char **exp_var)
 			len++;
 		}
 		if (((ft_strncmp(envp[i], var, ft_strlen(var))) == 0) \
-		&& (ft_strlen(var) == len))
+&& (ft_strlen(var) == len))
 		{
 			if ((get_exp_var(envp, exp_var, &i, &j)) == 1)
 				return (1);
@@ -71,7 +71,7 @@ size_t	get_len_new_word(char *exp_var, char *word, int i)
 	while (word[i] != '\0')
 	{
 		if (word[i] == ' ' || word[i] == '\t' \
-		|| word[i] == '\'' || word[i] == '\"')
+|| word[i] == '\'' || word[i] == '\"')
 			break ;
 		len_var++;
 		i++;
@@ -105,7 +105,7 @@ void	skip_exp_in_word(char **word, int *i)
 	while ((*word)[*i] != '\0')
 	{
 		if ((*word)[*i] == ' ' || (*word)[*i] == '\t' \
-		|| (*word)[*i] == '\'' || (*word)[*i] == '\"')
+|| (*word)[*i] == '\'' || (*word)[*i] == '\"')
 		{
 			(*i)--;
 			break ;
@@ -176,7 +176,7 @@ char *word, char *exp_var, int start)
 	char	*new_word;
 
 	if ((exp_var) && (ft_strlen(exp_var) == 2) \
-	&& (exp_var[0] == '\"') && (exp_var[1] == '\"'))
+&& (exp_var[0] == '\"') && (exp_var[1] == '\"'))
 	{
 		new_word = ft_strdup("");
 		if (new_word == NULL)
@@ -207,7 +207,7 @@ int	get_var(int i, char *word, int start, char **var)
 	while (word[i] != '\0')
 	{
 		if (word[i] == ' ' || word[i] == '\t' \
-		|| word[i] == '\'' || word[i] == '\"')
+|| word[i] == '\'' || word[i] == '\"')
 			break ;
 		len_var++;
 		i++;

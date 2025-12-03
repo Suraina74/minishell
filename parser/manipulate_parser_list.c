@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:26:50 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/12 14:07:32 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:12:50 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_lexer *lexer_list)
 	{
 		word_count = count_words(&temp_lex);
 		temp_parser->words = (char **) malloc((word_count + 1) \
-		* sizeof (char *));
+* sizeof (char *));
 		if (temp_parser->words == NULL)
 			return (NULL);
 		temp_parser = fill_2d_arrays(temp_parser, &lexer_list, word_count);

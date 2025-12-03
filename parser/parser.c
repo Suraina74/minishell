@@ -6,14 +6,11 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 20:24:59 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:18:51 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
-
-// PIPE woord erna en woord ervoor.
-// redirections must be followed by a word.
 
 int	parsing_error(t_lexer *lexer_list)
 {
@@ -24,7 +21,7 @@ int	parsing_error(t_lexer *lexer_list)
 		return (1);
 	}
 	if (lexer_list->token != -1 && (lexer_list->next == NULL \
-	|| lexer_list->next->word == NULL))
+|| lexer_list->next->word == NULL))
 	{
 		ft_putendl_fd("syntax error near unexpected token `newline'", 2);
 		free_list_l(&lexer_list);

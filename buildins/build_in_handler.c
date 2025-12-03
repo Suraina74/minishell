@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 20:17:16 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:15:22 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 int	execute_buildin(t_parser *parser_list, char ***envp)
 {
 	t_parser	*tmp;
-	int exit_stat = 0;
+	int			exit_stat;
 
+	exit_stat = 0;
 	tmp = parser_list;
 	if (tmp->words[0] == NULL)
 		return (1);

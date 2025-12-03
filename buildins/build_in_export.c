@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 20:10:06 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:06:04 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	compare_var_name(char *env_var, char *word)
 	if (var_in_env == NULL)
 		return (free(var_in_word), 1);
 	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0) \
-	&& (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
+&& (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
 		return (free(var_in_env), free(var_in_word), 0);
 	return (free(var_in_env), free(var_in_word), 1);
 }

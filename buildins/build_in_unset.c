@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:21 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 12:54:13 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:07:01 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	check_and_delete_var(char *word, char ***envp, char ***envp_new)
 		if (var_in_env == NULL)
 			return (1);
 		if (((ft_strncmp(var_in_env, word, ft_strlen(word))) == 0) \
-		&& (ft_strlen(word) == ft_strlen(var_in_env)))
+&& (ft_strlen(word) == ft_strlen(var_in_env)))
 		{
 			if ((delete_var(i, envp, envp_new)) == 1)
 				return (free(var_in_env), 1);

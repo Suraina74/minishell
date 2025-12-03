@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 20:24:59 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:03:27 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	check_quotes(char *string)
 int	check_input(char *string)
 {
 	if ((string[0] == '\0') || (if_only_spaces(string) == 1) \
-	|| check_quotes(string) == 1)
+|| check_quotes(string) == 1)
 		return (1);
 	return (0);
 }

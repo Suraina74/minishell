@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 20:18:17 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:05:27 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ t_lexer				*create_node_l(char *string);
 t_lexer				*last_node_l(t_lexer *lexer_list);
 void				add_to_end_l(t_lexer **lexer_list, t_lexer *node);
 t_lexer				*lexing(char *string);
-int					parsing(t_parser **parser_list, char *string, char **envp, int exit_stat);
+int					parsing(t_parser **parser_list, char *string, char **envp,
+						int exit_stat);
 t_parser			*create_node_p(void);
 t_parser			*last_node_p(t_parser *parser_list);
 void				add_to_end_p(t_parser **parser_list, t_parser *node);
