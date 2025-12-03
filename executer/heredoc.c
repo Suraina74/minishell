@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 15:26:35 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:07:15 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,13 @@ void	heredoc_expander(char *delim)
 		printf("expand\n");
 }
 
-void	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand)
+void	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
+		char ***envp)
 {
 	int		hd_fd[2];
 	char	*delim;
+	(void)envp;
+	(void)exit_stat;
 
 	delim = parser->redirections->next->word;
 	init_pipe(hd_fd);

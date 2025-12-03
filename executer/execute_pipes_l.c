@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 18:56:12 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:06:48 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 	close_fds(tmp, pipe_hand, &prev_in);
 }
 
-void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
-		char ***envp)
+void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp, 
+		char ***envp, int *exit_stat)
 {
 	int	saved_in;
 	int	saved_out;
 
-	pick_redirections(pipe_hand, tmp);
+	pick_redirections(pipe_hand, tmp, exit_stat, envp);
 	saved_in = dup(STDIN_FILENO);
 	saved_out = dup(STDOUT_FILENO);
 	if (pipe_hand->fd_in != -1)
@@ -92,7 +92,7 @@ void	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 	{
 		pipe_hand->fd_in = -1;
 		pipe_hand->fd_out = -1;
-		pick_redirections(pipe_hand, tmp);
+		pick_redirections(pipe_hand, tmp, exit_stat, envp);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
 		init_child_proc(tmp, pipe_hand, envp, exit_stat);
@@ -120,7 +120,7 @@ int	execute_pipes(t_parser *parser_list, char ***envp)
 	if (!tmp)
 		return (free(pipe_hand), EXIT_FAILURE);
 	if (build_in_flag(tmp) && tmp->next == NULL)
-		return (handle_single_build_in(pipe_hand, tmp, envp), exit_stat);
+		return (handle_single_build_in(pipe_hand, tmp, envp, &exit_stat), exit_stat);
 	else
 		handle_other(tmp, pipe_hand, &exit_stat, envp);
 	return (free(pipe_hand), exit_stat);
