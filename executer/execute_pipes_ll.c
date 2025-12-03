@@ -6,13 +6,14 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 19:03:35 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:10:05 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-void	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser, int *exit_stat, char ***envp)
+void	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
+		int *exit_stat, char ***envp)
 {
 	t_lexer	*tmp_red;
 

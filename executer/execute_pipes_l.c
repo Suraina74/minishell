@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 19:06:48 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:11:00 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 	close_fds(tmp, pipe_hand, &prev_in);
 }
 
-void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp, 
+void	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 		char ***envp, int *exit_stat)
 {
 	int	saved_in;
@@ -120,7 +120,8 @@ int	execute_pipes(t_parser *parser_list, char ***envp)
 	if (!tmp)
 		return (free(pipe_hand), EXIT_FAILURE);
 	if (build_in_flag(tmp) && tmp->next == NULL)
-		return (handle_single_build_in(pipe_hand, tmp, envp, &exit_stat), exit_stat);
+		return (handle_single_build_in(pipe_hand, tmp, envp, &exit_stat),
+			exit_stat);
 	else
 		handle_other(tmp, pipe_hand, &exit_stat, envp);
 	return (free(pipe_hand), exit_stat);
