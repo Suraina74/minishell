@@ -3,7 +3,8 @@ CC = cc
 SRCS = minishell.c check_input.c lexer/lexer.c lexer/lexer_list_func.c parser/parser.c \
 parser/parser_list_func.c parser/add_words_to_parser.c parser/add_red_to_parser.c \
 executer/exe_cmd.c executer/execute_pipes_l.c executer/execute_pipes_ll.c executer/path_builder.c expander/expanding.c \
-expander/empty_quotes_delete.c expander/empty_quotes_len.c \
+expander/empty_quotes_delete.c expander/empty_quotes_len.c expander/get_exp_var.c expander/make_new_word.c \
+expander/new_word_with_or_without_exp.c expander/quote_work.c \
 executer/executer_utils_l.c executer/executer_utils_ll.c buildins/build_in_handler.c \
 buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins/build_in_env.c \
 buildins/build_in_exit.c buildins/build_in_export.c buildins/export_add_new_var.c buildins/export_change_existing_var.c \

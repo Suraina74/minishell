@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 16:53:46 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 17:26:37 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,14 @@ t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
 char				*actions_if_dollar_found(char *word, int *i, 
 						char **envp, int exit_stat);
+int					get_var(int i, char *word, int start, char **var);
+char				*steps_for_new_word(char **exp_var, char **word, int *i, char **envp);
+int					actions_for_d_quote(char **word, int *i, char **envp, int exit_stat);
+int					actions_for_s_quote(char **word, int *i);
+char				*new_word_with_exp(int start, char *word, char *exp_var, int len_new_word);
+char				*new_word_without_exp(int start, char *word, int len_new_word);
+int					check_if_in_envp_and_get_exp(char *var, char **envp, char **exp_var);
+void				skip_exp_in_word(char **word, int *i);
 int					execute_buildin(t_parser *parser_list, char ***envp, int *running);
 int					build_in_echo(char **d2_wds);
 int					build_in_cd(char **path);
