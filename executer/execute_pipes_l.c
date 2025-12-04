@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 15:43:27 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 16:53:58 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,17 @@ void	child_setup_fds(t_utils_pipe *pipe_hand, int prev_in, int is_last)
 }
 
 void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
-		int *exit_running[2])
+		int *exit_running[2], int *prev_in)
 {
 	int	is_last;
-	int	prev_in;
 
-	prev_in = -1;
 	is_last = 0;
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
 		if (tmp->next == NULL)
 			is_last = 1;
-		child_setup_fds(pipe_hand, prev_in, is_last);
+		child_setup_fds(pipe_hand, *prev_in, is_last);
 		if (build_in_flag(tmp))
 			execute_buildin(tmp, envp, exit_running[1]);
 		else
@@ -53,7 +51,7 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
-	close_fds(tmp, pipe_hand, &prev_in);
+	close_fds(tmp, pipe_hand, prev_in);
 }
 
 int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
@@ -90,7 +88,9 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 {
 	t_utils_pipe	*current;
 	pid_t			last_pid;
+	int				prev_in;
 
+	prev_in	= -1;
 	while (tmp)
 	{
 		pipe_hand->fd_in = -1;
@@ -99,7 +99,7 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 			return (1);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
-		init_child_proc(tmp, pipe_hand, envp, exit_running);
+		init_child_proc(tmp, pipe_hand, envp, exit_running, &prev_in);
 		if (tmp->next == NULL)
 			last_pid = pipe_hand->child_proc;
 		if (pipe_hand->fd_in != -1)
