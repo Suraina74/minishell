@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 16:14:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/03 13:12:24 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 12:39:33 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ int	get_var(int i, char *word, int start, char **var)
 	while (word[i] != '\0')
 	{
 		if (word[i] == ' ' || word[i] == '\t' \
-|| word[i] == '\'' || word[i] == '\"')
+|| word[i] == '\'' || word[i] == '\"' || word[i] == '\n')
 			break ;
 		len_var++;
 		i++;

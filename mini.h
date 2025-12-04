@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 19:06:31 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 14:10:40 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef struct s_utils_pipe
 }					t_utils_pipe;
 
 void				ft_free_path(char **arr);
-int					execute_pipes(t_parser *parser_list, char ***envp);
+int					execute_pipes(t_parser **parser_list, char ***envp);
 int					check_input(char *string);
 t_lexer				*create_node_l(char *string);
 t_lexer				*last_node_l(t_lexer *lexer_list);
@@ -83,6 +83,8 @@ void				put_red_in_parser(t_lexer *lexer_list,
 						t_parser **parser_list, t_parser *node);
 t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
+char				*actions_if_dollar_found(char *word, int *i, 
+						char **envp, int exit_stat);
 int					execute_buildin(t_parser *parser_list, char ***envp);
 int					build_in_echo(char **d2_wds);
 int					build_in_cd(char **path);
@@ -107,11 +109,11 @@ char				**x_path(char **envp, char *command, int *exit_stat);
 void				last_cmd_stat(pid_t last_pid, int *exit_stat);
 void				close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
 						int *prev_in);
-void				heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand,
+int					heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand,
 						int *exit_stat, char ***envp);
-void				pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
+int					pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 						int *exit_stat, char ***envp);
-void				handle_single_build_in(t_utils_pipe *pipe_hand,
+int					handle_single_build_in(t_utils_pipe *pipe_hand,
 						t_parser *tmp, char ***envp, int *exit_stat);
 
 #endif
