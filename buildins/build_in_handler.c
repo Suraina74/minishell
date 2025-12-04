@@ -6,13 +6,13 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 15:40:08 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:29:11 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int	execute_buildin(t_parser *parser_list, char ***envp, int *running)
+int	execute_buildin(t_parser *parser_list, char ***envp, int *exit_running[3])
 {
 	t_parser	*tmp;
 	int			exit_stat;
@@ -34,7 +34,7 @@ int	execute_buildin(t_parser *parser_list, char ***envp, int *running)
 	else if ((ft_strncmp(tmp->words[0], "env", 3)) == 0)
 		return (build_in_env(envp));
 	else if ((ft_strncmp(tmp->words[0], "exit", 4)) == 0)
-		return (build_in_exit(exit_stat, tmp, running));
+		return (build_in_exit(exit_running[0], tmp, exit_running[1]));
 	return (0);
 }
 

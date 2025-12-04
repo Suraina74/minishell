@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 17:26:37 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:42:47 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
-#include <stdbool.h>
+# include <stdbool.h>
 
 # define FD_READ 0
 # define FD_WRITE 1
@@ -63,7 +63,8 @@ typedef struct s_utils_pipe
 }					t_utils_pipe;
 
 void				ft_free_path(char **arr);
-int					execute_pipes(t_parser **parser_list, char ***envp, int *running);
+int					execute_pipes(t_parser **parser_list,
+						char ***envp, int *running);
 int					check_input(char *string);
 t_lexer				*create_node_l(char *string);
 t_lexer				*last_node_l(t_lexer *lexer_list);
@@ -84,21 +85,28 @@ void				put_red_in_parser(t_lexer *lexer_list,
 						t_parser **parser_list, t_parser *node);
 t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
-char				*actions_if_dollar_found(char *word, int *i, 
+char				*actions_if_dollar_found(char *word, int *i,
 						char **envp, int exit_stat);
 int					get_var(int i, char *word, int start, char **var);
-char				*steps_for_new_word(char **exp_var, char **word, int *i, char **envp);
-int					actions_for_d_quote(char **word, int *i, char **envp, int exit_stat);
+char				*steps_for_new_word(char **exp_var,
+						char **word, int *i, char **envp);
+int					actions_for_d_quote(char **word, int *i,
+						char **envp, int exit_stat);
 int					actions_for_s_quote(char **word, int *i);
-char				*new_word_with_exp(int start, char *word, char *exp_var, int len_new_word);
-char				*new_word_without_exp(int start, char *word, int len_new_word);
-int					check_if_in_envp_and_get_exp(char *var, char **envp, char **exp_var);
+char				*new_word_with_exp(int start, char *word,
+						char *exp_var, int len_new_word);
+char				*new_word_without_exp(int start, char *word,
+						int len_new_word);
+int					check_if_in_envp_and_get_exp(char *var,
+						char **envp, char **exp_var);
 void				skip_exp_in_word(char **word, int *i);
-int					execute_buildin(t_parser *parser_list, char ***envp, int *running);
+int					execute_buildin(t_parser *parser_list,
+						char ***envp, int *exit_running[2]);
 int					build_in_echo(char **d2_wds);
 int					build_in_cd(char **path);
 int					build_in_pwd(void);
-int					build_in_exit(int exit_stat, t_parser *parser_list, int *running);
+int					build_in_exit(int *exit_stat, t_parser *parser_list,
+						int *running);
 int					build_in_export(t_parser *parser_list, char ***envp);
 int					change_existing_var(char *word, char ***envp, char **var);
 int					add_new_vars(char ***envp, char *word, char ***envp_new);
@@ -108,7 +116,7 @@ int					build_in_env(char ***envp);
 int					build_in_flag(t_parser *parser_list);
 void				execute_fun(t_parser *tmp, int *exit_stat, char ***envp);
 void				init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand,
-						char ***envp, int *exit_running[2], int *prev_in);
+						char ***envp, int *exit_running_in[3]);
 void				init_cmd(t_utils_pipe **cmd_struct);
 void				fd_output(t_utils_pipe *pipe_hand, int *is_last);
 void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);

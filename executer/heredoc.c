@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 13:32:15 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:25:50 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,13 @@ int	heredoc_expander(char **word, char **delim, char ***envp, int *exit_stat)
 	if ((*delim)[0] == '\'' || (*delim)[0] == '\"')
 		delete_quotes(delim);
 	else
+	{
 		while ((*word)[i])
 		{
 			if ((*word)[i] == '$')
 			{
-				new_word = actions_if_dollar_found(*word, &i, *envp, *exit_stat);
+				new_word = actions_if_dollar_found(*word,
+						&i, *envp, *exit_stat);
 				if (new_word == NULL)
 					return (1);
 				*word = ft_strjoin(new_word, "\n");
@@ -53,6 +55,7 @@ int	heredoc_expander(char **word, char **delim, char ***envp, int *exit_stat)
 			}
 			i++;
 		}
+	}
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 09:29:27 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 17:45:26 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:20:50 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,21 +72,20 @@ static char	*mk_x_path(char **paths, char *command, size_t dir_len)
 static char	*get_full_path(char **envp, char *command, int *exit_stat)
 {
 	char	**paths;
-	char	*path_variable;
 	char	*full_path;
 	size_t	dir_len;
 
-	path_variable = is_path(envp);
-	if (!path_variable)
+	if (ft_strchr(command, '/'))
+		return (full_path = ft_strdup(command), full_path);
+	if (!is_path(envp))
+	{
+		ft_putstr_fd(command, 2);
+		ft_putendl_fd(": No such file or directory", 2);
 		exit(EXIT_FAILURE);
-	paths = ft_split(path_variable, ':');
+	}
+	paths = ft_split(is_path(envp), ':');
 	if (!paths)
 		return (NULL);
-	if (ft_strchr(command, '/'))
-	{
-		full_path = ft_strdup(command);
-		return (ft_free_path(paths), full_path);
-	}
 	dir_len = longest_dir(paths);
 	full_path = mk_x_path(paths, command, dir_len);
 	if (!full_path)
