@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:15:22 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:40:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int	execute_buildin(t_parser *parser_list, char ***envp)
+int	execute_buildin(t_parser *parser_list, char ***envp, int *running)
 {
 	t_parser	*tmp;
 	int			exit_stat;
@@ -34,7 +34,7 @@ int	execute_buildin(t_parser *parser_list, char ***envp)
 	else if ((ft_strncmp(tmp->words[0], "env", 3)) == 0)
 		return (build_in_env(envp));
 	else if ((ft_strncmp(tmp->words[0], "exit", 4)) == 0)
-		return (build_in_exit(exit_stat, tmp));
+		return (build_in_exit(exit_stat, tmp, running));
 	return (0);
 }
 

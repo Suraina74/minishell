@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:47 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/12 12:47:01 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:40:08 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,27 @@ static int	is_numeric(const char *str)
 	return (1);
 }
 
-int	build_in_exit(int exit_stat, t_parser *parser_list)
+int	build_in_exit(int exit_stat, t_parser *parser_list, int *running)
 {
 	t_parser	*tmp;
 
 	tmp = parser_list;
+	*running = false;
 	if (tmp->words[1])
 	{
 		if (!is_numeric(tmp->words[1]))
 		{
 			ft_putendl_fd("exit: numeric argument required", 2);
-			free_list_p(&parser_list);
-			exit(2);
+			return (2);
 		}
 		exit_stat = ft_atoi(tmp->words[1]);
 		if (tmp->words[2])
 		{
 			ft_putendl_fd("exit: too many arguments", 2);
-			free_list_p(&parser_list);
-			exit(1);
+			return (1);
 		}
 	}
 	else
 		exit_stat = 0;
-	free_list_p(&parser_list);
-	printf("exit\n");
-	exit(exit_stat);
+	return (0);
 }

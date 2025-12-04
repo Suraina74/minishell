@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 14:10:40 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:46:10 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <stdbool.h>
 
 # define FD_READ 0
 # define FD_WRITE 1
@@ -62,7 +63,7 @@ typedef struct s_utils_pipe
 }					t_utils_pipe;
 
 void				ft_free_path(char **arr);
-int					execute_pipes(t_parser **parser_list, char ***envp);
+int					execute_pipes(t_parser **parser_list, char ***envp, int *running);
 int					check_input(char *string);
 t_lexer				*create_node_l(char *string);
 t_lexer				*last_node_l(t_lexer *lexer_list);
@@ -85,11 +86,11 @@ t_lexer				*expander(t_lexer *lexer_list, char **envp, int exit_stat);
 size_t				len_without_empty_strings(char *word);
 char				*actions_if_dollar_found(char *word, int *i, 
 						char **envp, int exit_stat);
-int					execute_buildin(t_parser *parser_list, char ***envp);
+int					execute_buildin(t_parser *parser_list, char ***envp, int *running);
 int					build_in_echo(char **d2_wds);
 int					build_in_cd(char **path);
 int					build_in_pwd(void);
-int					build_in_exit(int exit_stat, t_parser *parser_list);
+int					build_in_exit(int exit_stat, t_parser *parser_list, int *running);
 int					build_in_export(t_parser *parser_list, char ***envp);
 int					change_existing_var(char *word, char ***envp, char **var);
 int					add_new_vars(char ***envp, char *word, char ***envp_new);
@@ -99,7 +100,7 @@ int					build_in_env(char ***envp);
 int					build_in_flag(t_parser *parser_list);
 void				execute_fun(t_parser *tmp, int *exit_stat, char ***envp);
 void				init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand,
-						char ***envp, int *exit_stat);
+						char ***envp, int *exit_running[2]);
 void				init_cmd(t_utils_pipe **cmd_struct);
 void				fd_output(t_utils_pipe *pipe_hand, int *is_last);
 void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);
@@ -114,6 +115,6 @@ int					heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand,
 int					pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 						int *exit_stat, char ***envp);
 int					handle_single_build_in(t_utils_pipe *pipe_hand,
-						t_parser *tmp, char ***envp, int *exit_stat);
+						t_parser *tmp, char ***envp, int *exit_running[2]);
 
 #endif

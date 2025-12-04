@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 13:57:25 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:43:27 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ void	child_setup_fds(t_utils_pipe *pipe_hand, int prev_in, int is_last)
 		close(prev_in);
 	if (pipe_hand->fd_out != -1)
 		close(pipe_hand->fd_out);
-	close(pipe_hand->fd[0]);
+	if (pipe_hand->fd[0] != STDIN_FILENO)
+		close(pipe_hand->fd[0]);
 	if (!is_last)
 		close(pipe_hand->fd[1]);
 }
 
 void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
-		int *exit_stat)
+		int *exit_running[2])
 {
 	int	is_last;
 	int	prev_in;
@@ -42,10 +43,10 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 			is_last = 1;
 		child_setup_fds(pipe_hand, prev_in, is_last);
 		if (build_in_flag(tmp))
-			execute_buildin(tmp, envp);
+			execute_buildin(tmp, envp, exit_running[1]);
 		else
-			execute_fun(tmp, exit_stat, envp);
-		exit(*exit_stat);
+			execute_fun(tmp, exit_running[0], envp);
+		exit(*exit_running[0]);
 	}
 	else if (pipe_hand->child_proc < 0)
 	{
@@ -56,12 +57,12 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 }
 
 int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
-		char ***envp, int *exit_stat)
+		char ***envp, int *exit_running[2])
 {
 	int	saved_in;
 	int	saved_out;
 
-	if ((pick_redirections(pipe_hand, tmp, exit_stat, envp)) == 1)
+	if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 		return (1);
 	saved_in = dup(STDIN_FILENO);
 	saved_out = dup(STDOUT_FILENO);
@@ -75,7 +76,7 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 		dup2(pipe_hand->fd_out, STDOUT_FILENO);
 		close(pipe_hand->fd_out);
 	}
-	execute_buildin(tmp, envp);
+	execute_buildin(tmp, envp, exit_running[1]);
 	dup2(saved_in, STDIN_FILENO);
 	dup2(saved_out, STDOUT_FILENO);
 	close(saved_in);
@@ -84,7 +85,7 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	return (0);
 }
 
-int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
+int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 		char ***envp)
 {
 	t_utils_pipe	*current;
@@ -94,11 +95,11 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 	{
 		pipe_hand->fd_in = -1;
 		pipe_hand->fd_out = -1;
-		if ((pick_redirections(pipe_hand, tmp, exit_stat, envp)) == 1)
+		if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 			return (1);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
-		init_child_proc(tmp, pipe_hand, envp, exit_stat);
+		init_child_proc(tmp, pipe_hand, envp, exit_running);
 		if (tmp->next == NULL)
 			last_pid = pipe_hand->child_proc;
 		if (pipe_hand->fd_in != -1)
@@ -108,11 +109,11 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_stat,
 		tmp = tmp->next;
 	}
 	current = pipe_hand;
-	last_cmd_stat(last_pid, exit_stat);
+	last_cmd_stat(last_pid, exit_running[0]);
 	return (0);
 }
 
-int	execute_pipes(t_parser **parser_list, char ***envp)
+int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
 {
 	t_parser		*tmp;
 	t_utils_pipe	*pipe_hand;
@@ -125,13 +126,13 @@ int	execute_pipes(t_parser **parser_list, char ***envp)
 		return (free(pipe_hand), EXIT_FAILURE);
 	if (build_in_flag(tmp) && tmp->next == NULL)
 	{
-		if ((handle_single_build_in(pipe_hand, tmp, envp, &exit_stat)) == 1)
+		if ((handle_single_build_in(pipe_hand, tmp, envp, (int *[2]){&exit_stat, running})) == 1)
 			return (free_list_p(parser_list), 1);
 		return (exit_stat);
 	}
 	else
 	{
-		if ((handle_other(tmp, pipe_hand, &exit_stat, envp)) == 1)
+		if ((handle_other(tmp, pipe_hand, (int *[2]){&exit_stat, running}, envp)) == 1)
 			return (free_list_p(parser_list), 1);
 	}
 	return (free(pipe_hand), exit_stat);

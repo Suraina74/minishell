@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 19:01:01 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 14:27:31 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	init_cmd(t_utils_pipe **cmd_struct)
 	if (!tmp)
 		return ;
 	tmp->command = NULL;
+	tmp->fd[0] = 0;
+	tmp->fd[1] = 0;
 	tmp->fd_in = -1;
 	tmp->fd_out = -1;
 	tmp->child_proc = -1;

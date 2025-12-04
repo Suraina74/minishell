@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:54:30 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/04 14:20:49 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:46:03 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	main(int ac, char **av, char **envp)
 	t_parser	*parser_list;
 	int			exit_stat;
 	char		**envp_new;
+	int		running = true;
 
 	exit_stat = 0;
 	(void)ac;
@@ -96,7 +97,7 @@ int	main(int ac, char **av, char **envp)
 	envp_new = copy_envp(envp);
 	if (envp_new == NULL)
 		return (1);
-	while (1)
+	while (running)
 	{
 		parser_list = NULL;
 		rl = readline("minishell > ");
@@ -106,7 +107,7 @@ int	main(int ac, char **av, char **envp)
 			parser_list = NULL;
 		else if ((parsing(&parser_list, rl, envp_new, exit_stat)) == 1)
 			return (free_copy_envp(&envp_new), free(rl), 1);
-		exit_stat = execute_pipes(&parser_list, &envp_new);
+		exit_stat = execute_pipes(&parser_list, &envp_new, &running);
 		if (rl[0] != '\0')
 			add_history(rl);
 		free(rl);
