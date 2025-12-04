@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 18:58:40 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:06:37 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int					check_if_in_envp_and_get_exp(char *var,
 						char **envp, char **exp_var);
 void				skip_exp_in_word(char **word, int *i);
 int					execute_buildin(t_parser *parser_list,
-						char ***envp, int *exit_running[2]);
+						char ***envp, int *exit_running[3]);
 int					build_in_echo(char **d2_wds);
 int					build_in_cd(char **path);
 int					build_in_pwd(void);
