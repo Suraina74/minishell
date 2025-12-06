@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 18:37:03 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/06 16:27:45 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
 	t_utils_pipe	*pipe_hand;
 	int				exit_stat;
 
+	init_signals_child();
 	exit_stat = 0;
 	tmp = *parser_list;
 	init_cmd(&pipe_hand);

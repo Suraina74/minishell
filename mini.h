@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 19:06:37 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/06 16:27:07 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <stdbool.h>
+# include <signal.h>
 
 # define FD_READ 0
 # define FD_WRITE 1
@@ -133,5 +134,8 @@ int					pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 int					handle_single_build_in(t_utils_pipe *pipe_hand,
 						t_parser *tmp, char ***envp, int *exit_running[2]);
 void				miniloop(int *exit_stat, char ***envp_new);
+void				init_signals();
+void				init_signals_child();
+void				init_signals_heredoc();
 
 #endif
