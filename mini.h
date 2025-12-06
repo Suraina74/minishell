@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 16:27:07 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:13:25 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,5 +137,6 @@ void				miniloop(int *exit_stat, char ***envp_new);
 void				init_signals();
 void				init_signals_child();
 void				init_signals_heredoc();
+void				check_fd_single_buildin(t_utils_pipe *pipe_hand);
 
 #endif

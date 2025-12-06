@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 16:27:45 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:14:37 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,17 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 		return (1);
 	saved_in = dup(STDIN_FILENO);
+	if (saved_in == -1)
+		return (perror("dup stdin"), -1);
 	saved_out = dup(STDOUT_FILENO);
-	if (pipe_hand->fd_in != -1)
-	{
-		dup2(pipe_hand->fd_in, STDIN_FILENO);
-		close(pipe_hand->fd_in);
-	}
-	if (pipe_hand->fd_out != -1)
-	{
-		dup2(pipe_hand->fd_out, STDOUT_FILENO);
-		close(pipe_hand->fd_out);
-	}
+	if (saved_out == -1)
+		return (perror("dup stdout"), -1);
+	check_fd_single_buildin(pipe_hand);
 	execute_buildin(tmp, envp, exit_running);
-	dup2(saved_in, STDIN_FILENO);
-	dup2(saved_out, STDOUT_FILENO);
+	if (dup2(saved_in, STDIN_FILENO) == -1)
+		perror("restore stdin");
+	if (dup2(saved_out, STDOUT_FILENO) == -1)
+		perror("restore stdout");
 	close(saved_in);
 	close(saved_out);
 	free(pipe_hand);
@@ -86,7 +83,6 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 		char ***envp)
 {
-	t_utils_pipe	*current;
 	pid_t			last_pid;
 	int				prev_in;
 
@@ -109,7 +105,6 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 			close(pipe_hand->fd_out);
 		tmp = tmp->next;
 	}
-	current = pipe_hand;
 	return (last_cmd_stat(last_pid, exit_running[0]), 0);
 }
 
