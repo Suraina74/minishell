@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 16:32:37 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/27 12:47:37 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/06 15:37:28 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 int	build_in_cd(char **d2_array)
 {
-	size_t	i;
-
-	i = 0;
-	while (d2_array[i])
-	{
-		chdir(d2_array[i]);
-		if (d2_array[i] == NULL)
-			printf("error\n");
-		i++;
-	}
+	if (d2_array[1] == NULL)
+		return (ft_putendl_fd("cd: only with relative or absolute path", 2)
+			, 1);
+	if (d2_array[1] && d2_array[2])
+		return (ft_putendl_fd("cd: too many arguments", 2), 1);
+	if (chdir(d2_array[1]) == -1)
+		return (perror("cd"), 1);
 	return (0);
 }
