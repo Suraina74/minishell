@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 19:14:37 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:09:01 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 	int	is_last;
 
 	is_last = 0;
+	init_signals_child();
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
@@ -93,11 +94,12 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 		pipe_hand->fd_out = -1;
 		if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 			return (1);
+		init_signals();
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
 		init_child_proc(tmp, pipe_hand, envp,
 			(int*[3]){exit_running[0], exit_running[1], &prev_in});
-		if (tmp->next == NULL)
+			if (tmp->next == NULL)
 			last_pid = pipe_hand->child_proc;
 		if (pipe_hand->fd_in != -1)
 			close(pipe_hand->fd_in);
@@ -114,7 +116,6 @@ int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
 	t_utils_pipe	*pipe_hand;
 	int				exit_stat;
 
-	init_signals_child();
 	exit_stat = 0;
 	tmp = *parser_list;
 	init_cmd(&pipe_hand);
@@ -133,5 +134,6 @@ int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
 					{&exit_stat, running}, envp)) == 1)
 			return (free_list_p(parser_list), 1);
 	}
+	init_signals();
 	return (free(pipe_hand), exit_stat);
 }

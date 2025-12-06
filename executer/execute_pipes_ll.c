@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_ll.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 14:57:24 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:10:10 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ int	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 		{
 			if ((heredoc_start(parser, pipe_hand, exit_stat, envp)) == 1)
 				return (1);
+			// if (g_signal == SIGINT)
+			// {
+			// 	g_signal = 0;
+			// 	return (130);
+			// }
 		}
 		tmp_red = tmp_red->next;
 	}
