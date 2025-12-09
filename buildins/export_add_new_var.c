@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 13:23:13 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/03 13:24:18 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/09 20:27:47 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int	add_new_vars(char ***envp, char *word, char ***envp_new)
 		return (1);
 	if ((ending_with_equal_sign(word, envp_new, &i)) == 1)
 		return (1);
-	if ((*envp_new)[i] == NULL)
-		return (free_copy_envp(envp), 0);
+	// if ((*envp_new)[i] == NULL)
+	// 	return (free_copy_envp(envp), 0);
 	(*envp_new)[i] = ft_strdup(word);
 	if ((*envp_new)[i] == NULL)
 	{

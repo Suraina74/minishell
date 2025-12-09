@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/09 17:02:18 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/09 19:37:26 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,13 @@ int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 	init_signals_heredoc();
 	delim = parser->redirections->next->word;
 	init_pipe(hd_fd);
-	while (g_signal != SIGINT && 1)
+	while (1 && g_signal != SIGINT)
 	{
 		parser->heredoc = readline("heredoc > ");
 		if (parser->heredoc == NULL)
 		{
 			ft_putendl_fd("warning: here-document delimited by end-of-file", 2);
-			break;
+			break ;
 		}
 		if ((heredoc_expander(&parser->heredoc, &delim, envp, exit_stat)) == 1)
 			return (free(parser->heredoc), 1);

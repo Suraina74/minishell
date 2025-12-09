@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:52:23 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/09 17:00:19 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/09 20:00:44 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,15 @@ void	miniloop(int *exit_stat, char ***envp_new)
 	running = true;
 	while (running)
 	{
-		init_signals();
 		g_signal = 0;
+		init_signals();
 		parser_list = NULL;
 		rl = readline("minishell > ");
+		if (g_signal == SIGINT)
+		{
+			g_signal = 0;
+			*exit_stat = 130;
+		}
 		if (rl == NULL)
 			break ;
 		if ((check_input(rl)) == 1)
