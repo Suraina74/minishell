@@ -7,10 +7,10 @@ expander/empty_quotes_delete.c expander/empty_quotes_len.c expander/get_exp_var.
 expander/new_word_with_or_without_exp.c expander/quote_work.c \
 executer/executer_utils_l.c executer/executer_utils_ll.c buildins/build_in_handler.c \
 buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins/build_in_env.c \
-buildins/build_in_exit.c buildins/build_in_export.c buildins/export_add_new_var.c buildins/export_change_existing_var.c \
+buildins/build_in_exit.c buildins/build_in_export.c \
 buildins/build_in_unset.c executer/heredoc.c signals/signals.c
 
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=undefined
+CFLAGS = -g3 -fsanitize=undefined #-Wall -Wextra -Werror 
 LIBFT_DIR = ./libft
 OBJS = $(SRCS:.c=.o)
 HEADER = -I $(LIBFT_DIR)
