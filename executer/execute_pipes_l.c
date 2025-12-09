@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 20:09:01 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/09 17:17:19 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 
 	is_last = 0;
 	init_signals_child();
+	if (g_signal == SIGINT)
+	{
+		*exit_running_in[0] = 130;
+		return ;
+	}
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
@@ -63,6 +68,8 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 
 	if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 		return (1);
+	if (g_signal == SIGINT)
+		*exit_running[0] = 130;
 	saved_in = dup(STDIN_FILENO);
 	if (saved_in == -1)
 		return (perror("dup stdin"), -1);
@@ -94,7 +101,6 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 		pipe_hand->fd_out = -1;
 		if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 			return (1);
-		init_signals();
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
 		init_child_proc(tmp, pipe_hand, envp,
@@ -134,6 +140,10 @@ int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
 					{&exit_stat, running}, envp)) == 1)
 			return (free_list_p(parser_list), 1);
 	}
+	if (g_signal == SIGINT)
+		return (130);
+	if (g_signal == SIGQUIT)
+		return (131);
 	init_signals();
 	return (free(pipe_hand), exit_stat);
 }
