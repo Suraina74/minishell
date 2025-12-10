@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 19:04:41 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 19:22:40 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,7 @@ int	heredoc_expander(char **word, char **delim, char ***envp, int *exit_stat)
 						&i, *envp, *exit_stat);
 				if (new_word == NULL)
 					return (1);
-				*word = ft_strjoin(new_word, "\n");
-				if (*word == NULL)
-					return (1);
-				free(new_word);
+				*word = new_word;
 			}
 			i++;
 		}
@@ -85,7 +82,8 @@ int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 			return (free(parser->heredoc), 1);
 		if (!parser->heredoc)
 			break ;
-		if (ft_strncmp(parser->heredoc, delim, ft_strlen(delim)) == 0 && ft_strlen(delim) == ft_strlen(parser->heredoc))
+		if (ft_strncmp(parser->heredoc, delim, ft_strlen(delim)) == 0 \
+&& ft_strlen(delim) == ft_strlen(parser->heredoc))
 		{
 			free(parser->heredoc);
 			break ;
