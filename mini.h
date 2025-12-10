@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 18:35:04 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/10 21:04:04 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int					build_in_exit(int *exit_stat, t_parser *parser_list,
 						int *running);
 int					build_in_export(t_parser *parser_list, char ***envp);
 int					change_existing_var(char *word, char ***envp);
-char				**add_new_vars(char ***envp, char *word, int var_count);
+char				**add_new_vars(char ***envp, char *word, size_t var_count);
 void				free_copy_envp(char ***envp_new);
 int					build_in_unset(t_parser *parser_list, char ***envp);
 int					build_in_env(char ***envp);
