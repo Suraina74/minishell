@@ -8,9 +8,9 @@ expander/new_word_with_or_without_exp.c expander/quote_work.c \
 executer/executer_utils_l.c executer/executer_utils_ll.c buildins/build_in_handler.c \
 buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins/build_in_env.c \
 buildins/build_in_exit.c buildins/build_in_export.c \
-buildins/build_in_unset.c executer/heredoc.c signals/signals.c
+buildins/build_in_unset.c executer/heredoc.c signals/signals.c signals/signals_init.c
 
-CFLAGS = -g3 -Wall -Wextra -Werror 
+CFLAGS = -fsanitize=address -g3 -Wall -Wextra -Werror
 LIBFT_DIR = ./libft
 OBJS = $(SRCS:.c=.o)
 HEADER = -I $(LIBFT_DIR)

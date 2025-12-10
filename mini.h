@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 17:07:27 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:35:04 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,9 @@ void				miniloop(int *exit_stat, char ***envp_new);
 void				init_signals(void);
 void				init_signals_child(void);
 void				init_signals_heredoc(void);
+void				signal_handler_child(int signal);
+void				signal_handler(int signal);
+void				signal_handler_heredoc(int signal);
 void				check_fd_single_buildin(t_utils_pipe *pipe_hand);
 void				sig_stat(int *exit_stat);
 #endif

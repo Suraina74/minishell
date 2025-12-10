@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/03 13:25:33 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:40:31 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	compare_var_name(char *env_var, char *word)
 {
-	int 	len;
+	int		len;
 	char	*var_in_env;
 	char	*var_in_word;
 
@@ -38,8 +38,9 @@ int	compare_var_name(char *env_var, char *word)
 	var_in_env = ft_substr(env_var, 0, len);
 	if (var_in_env == NULL)
 		return (free(var_in_word), 1);
-	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0) && (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
-			return (free(var_in_env), free(var_in_word), 0);
+	if (((ft_strncmp(var_in_env, var_in_word, ft_strlen(var_in_word))) == 0)
+		&& (ft_strlen(var_in_word) == ft_strlen(var_in_env)))
+		return (free(var_in_env), free(var_in_word), 0);
 	return (free(var_in_env), free(var_in_word), 1);
 }
 
@@ -171,8 +172,8 @@ int	check_if_valid(char *word)
 
 int	build_in_export(t_parser *parser_list, char ***envp)
 {
-	t_parser	*tmp;     
-    int		     words_in_node;
+	t_parser	*tmp;
+	int			words_in_node;
 	size_t		var_count;
 	int			changed_var;
 	char		**envp_new;
@@ -182,17 +183,14 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 	envp_new = NULL;
 	tmp = parser_list;
 	i = 0;
-    while (tmp->words[words_in_node])
-    	words_in_node++;
-    if (words_in_node == 1)
-    {
-        while ((*envp)[i])
-	    {
-		    printf("%s\n", (*envp)[i]);
-            i++;
-		}
-        return (0);
-    }
+	while (tmp->words[words_in_node])
+		words_in_node++;
+	if (words_in_node == 1)
+	{
+		while ((*envp)[i])
+			printf("%s\n", (*envp)[i++]);
+		return (0);
+	}
 	i = 1;
 	while (tmp->words[i])
 	{
