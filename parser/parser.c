@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 11:18:41 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/04 14:10:50 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:16:36 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	parsing(t_parser **parser_list, char *string, char **envp, int exit_stat)
 	t_lexer		*lexer_list;
 	t_parser	*node;
 
+	if (check_input(string) == 1)
+		return (0);
 	lexer_list = lexing(string);
 	if (lexer_list == NULL)
 		return (1);

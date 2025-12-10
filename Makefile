@@ -10,7 +10,7 @@ buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins
 buildins/build_in_exit.c buildins/build_in_export.c \
 buildins/build_in_unset.c executer/heredoc.c signals/signals.c
 
-CFLAGS = -g3 -fsanitize=undefined #-Wall -Wextra -Werror 
+CFLAGS = -g3 -Wall -Wextra -Werror 
 LIBFT_DIR = ./libft
 OBJS = $(SRCS:.c=.o)
 HEADER = -I $(LIBFT_DIR)

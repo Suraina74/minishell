@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:54:54 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/06 19:13:17 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:44:56 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,21 @@ void	close_fds(t_parser *tmp, t_utils_pipe *pipe_hand, int *prev_in)
 	{
 		close(pipe_hand->fd[1]);
 		*prev_in = pipe_hand->fd[0];
+	}
+}
+
+void	sig_stat(int *exit_stat)
+{
+	if (g_signal == SIGINT)
+	{
+		g_signal = 0;
+		*exit_stat = 130;
+	}
+	if (g_signal == SIGQUIT)
+	{
+		g_signal = 0;
+		ft_putendl_fd("Quit (core dumped)", 2);
+		*exit_stat = 131;
 	}
 }
 

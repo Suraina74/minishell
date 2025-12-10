@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/09 13:09:03 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:07:27 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define FD_READ 0
 # define FD_WRITE 1
 
-extern volatile sig_atomic_t g_signal;
+extern volatile sig_atomic_t	g_signal;
 
 typedef enum s_tokens
 {
@@ -136,9 +136,9 @@ int					pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 int					handle_single_build_in(t_utils_pipe *pipe_hand,
 						t_parser *tmp, char ***envp, int *exit_running[2]);
 void				miniloop(int *exit_stat, char ***envp_new);
-void				init_signals();
-void				init_signals_child();
-void				init_signals_heredoc();
+void				init_signals(void);
+void				init_signals_child(void);
+void				init_signals_heredoc(void);
 void				check_fd_single_buildin(t_utils_pipe *pipe_hand);
-
+void				sig_stat(int *exit_stat);
 #endif

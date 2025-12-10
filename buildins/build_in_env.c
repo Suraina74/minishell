@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:24:19 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/11/26 20:04:29 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:20:21 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,15 @@
 
 int	build_in_env(char ***envp)
 {
-	int	i;
-	int	j;
+	int		i;
+	char	*current;
 
 	i = 0;
 	while ((*envp)[i])
 	{
-		j = 0;
-		if ((ft_strchr((*envp)[i], '=') != NULL))
-		{
-			while ((*envp)[i][j])
-			{
-				if ((*envp)[i][j] == '=' && (*envp)[i][j + 1] != '\0')
-				{
-					printf("%s\n", (*envp)[i]);
-					break ;
-				}
-				j++;
-			}
-		}
+		current = ft_strchr((*envp)[i], '=');
+		if (current && *current + 1 != '\0')
+			printf("%s\n", (*envp)[i]);
 		i++;
 	}
 	return (0);

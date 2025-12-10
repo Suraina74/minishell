@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 16:23:38 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/09 19:17:54 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:39:27 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-volatile sig_atomic_t g_signal = 0;
+volatile sig_atomic_t	g_signal = 0;
 
-int event(void)
+int	event(void)
 {
 	return (0);
 }
@@ -42,20 +42,20 @@ void	signal_handler(int signal)
 	rl_redisplay();
 }
 
-void	init_signals()
+void	init_signals(void)
 {
 	rl_event_hook = event;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	init_signals_child()
+void	init_signals_child(void)
 {
 	signal(SIGINT, signal_handler_child);
 	signal(SIGQUIT, signal_handler_child);
 }
 
-void	init_signals_heredoc()
+void	init_signals_heredoc(void)
 {
 	signal(SIGINT, signal_handler_heredoc);
 	signal(SIGQUIT, SIG_IGN);

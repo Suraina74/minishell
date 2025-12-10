@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:52:23 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/09 20:00:44 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:30:55 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
+
+static char	*prompt(t_parser **parser_list, int *exit_stat)
+{
+	char	*line;
+
+	g_signal = 0;
+	init_signals();
+	*parser_list = NULL;
+	line = readline("minishell > ");
+	if (g_signal == SIGINT)
+	{
+		g_signal = 0;
+		*exit_stat = 130;
+	}
+	return (line);
+}
 
 void	miniloop(int *exit_stat, char ***envp_new)
 {
@@ -21,19 +37,9 @@ void	miniloop(int *exit_stat, char ***envp_new)
 	running = true;
 	while (running)
 	{
-		g_signal = 0;
-		init_signals();
-		parser_list = NULL;
-		rl = readline("minishell > ");
-		if (g_signal == SIGINT)
-		{
-			g_signal = 0;
-			*exit_stat = 130;
-		}
+		rl = prompt(&parser_list, exit_stat);
 		if (rl == NULL)
 			break ;
-		if ((check_input(rl)) == 1)
-			parser_list = NULL;
 		else if ((parsing(&parser_list, rl, *envp_new, *exit_stat)) == 1)
 		{
 			free_copy_envp(envp_new);

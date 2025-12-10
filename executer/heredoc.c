@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/09 19:37:26 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:35:21 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,20 @@ int	heredoc_expander(char **word, char **delim, char ***envp, int *exit_stat)
 	return (0);
 }
 
+static void	setup(char **delim, t_parser *parser, int *hd_fd)
+{
+	*delim = parser->redirections->next->word;
+	init_signals_heredoc();
+	init_pipe(hd_fd);
+}
+
 int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 		char ***envp)
 {
-	int		hd_fd[2];
-	char	*delim;
+	int			hd_fd[2];
+	char		*delim;
 
-	init_signals_heredoc();
-	delim = parser->redirections->next->word;
-	init_pipe(hd_fd);
+	setup(&delim, parser, hd_fd);
 	while (1 && g_signal != SIGINT)
 	{
 		parser->heredoc = readline("heredoc > ");
@@ -80,18 +85,13 @@ int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 			return (free(parser->heredoc), 1);
 		if (!parser->heredoc)
 			break ;
-		if (ft_strncmp(parser->heredoc, delim, ft_strlen(delim)) == 0
-			&& parser->heredoc[ft_strlen(delim)] == '\0')
+		if (ft_strncmp(parser->heredoc, delim, ft_strlen(delim)) == 0)
 		{
 			free(parser->heredoc);
 			break ;
 		}
-		write(hd_fd[1], parser->heredoc, ft_strlen(parser->heredoc));
-		write(hd_fd[1], "\n", 1);
+		ft_putendl_fd(parser->heredoc, hd_fd[1]);
 		free(parser->heredoc);
 	}
-	close(hd_fd[1]);
-	pipe_hand->fd_in = hd_fd[0];
-	init_signals();
-	return (0);
+	return (close(hd_fd[1]), pipe_hand->fd_in = hd_fd[0], init_signals(), 0);
 }
