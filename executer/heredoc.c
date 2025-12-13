@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/13 12:55:29 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 14:12:11 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 			break ;
 		}
 		if ((heredoc_expander(&parser->heredoc, &delim, envp, exit_stat)) == 1)
-			return (free(parser->heredoc), 1);
+			return (close(hd_fd[0]), close(hd_fd[1]), free(parser->heredoc), \
+free(pipe_hand), 1);
 		if (!parser->heredoc)
 			break ;
 		if (ft_strncmp(parser->heredoc, delim, ft_strlen(delim)) == 0 \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_ll.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/12 22:08:16 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 14:33:38 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,16 @@ static int	out_redir(t_lexer **tmp_red, t_utils_pipe *pipe_hand)
 	return (0);
 }
 
+int	init_heredoc(t_utils_pipe **pipe_hand,
+		int *exit_stat, char ***envp, t_parser *parser)
+{
+	if ((*pipe_hand)->fd_in != STDIN_FILENO && (*pipe_hand)->fd_in != -1)
+		close((*pipe_hand)->fd_in);
+	if ((heredoc_start(parser, *pipe_hand, exit_stat, envp)) == 1)
+		return (1);
+	return (0);
+}
+
 int	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 		int *exit_stat, char ***envp)
 {
@@ -57,8 +67,7 @@ int	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 		}
 		else if (tmp_red->token == ININ)
 		{
-			if ((heredoc_start(parser, pipe_hand, exit_stat, envp)) == 1)
-				return (1);
+			init_heredoc(&pipe_hand, exit_stat, envp, parser);
 			tmp_red = tmp_red->next;
 		}
 		if (tmp_red != NULL)
