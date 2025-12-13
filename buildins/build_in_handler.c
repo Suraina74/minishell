@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 16:15:56 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 18:29:11 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 21:18:33 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ int	execute_buildin(t_parser *parser_list, char ***envp, int *exit_running[3])
 	else if ((ft_strncmp(tmp->words[0], "echo", 4)) == 0)
 		return (build_in_echo(tmp->words));
 	else if ((ft_strncmp(tmp->words[0], "cd", 2)) == 0)
-		return (build_in_cd(tmp->words));
+		return (build_in_cd(tmp->words, exit_running[0]));
 	else if ((ft_strncmp(tmp->words[0], "pwd", 3)) == 0)
 		return (build_in_pwd());
 	else if ((ft_strncmp(tmp->words[0], "export", 6)) == 0)
-		return (build_in_export(tmp, envp));
+		return (build_in_export(tmp, envp, exit_running[0]));
 	else if ((ft_strncmp(tmp->words[0], "unset", 5)) == 0)
 		return (build_in_unset(tmp, envp));
 	else if ((ft_strncmp(tmp->words[0], "env", 3)) == 0)
-		return (build_in_env(envp));
+		return (build_in_env(tmp->words, envp));
 	else if ((ft_strncmp(tmp->words[0], "exit", 4)) == 0)
 		return (build_in_exit(exit_running[0], tmp, exit_running[1]));
 	return (0);

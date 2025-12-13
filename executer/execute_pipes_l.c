@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 16:45:48 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:15:49 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 
 	is_last = 0;
 	init_signals_child();
-	if (g_signal == SIGINT)
-		*exit_running_in[0] = 130;
+	if ((sigint_return(&exit_running_in[0])) == 1)
+		return ;
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
@@ -44,16 +44,17 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 			is_last = 1;
 		child_setup_fds(pipe_hand, *exit_running_in[2], is_last);
 		if (build_in_flag(tmp))
+		{
 			execute_buildin(tmp, envp, exit_running_in);
+			free_copy_envp(envp);
+			free_list_p(pipe_hand->parser);
+			free(pipe_hand);
+		}
 		else
-			execute_fun(tmp, exit_running_in[0], envp);
+			execute_fun(tmp, exit_running_in[0], envp, pipe_hand);
 		exit(*exit_running_in[0]);
 	}
-	else if (pipe_hand->child_proc < 0)
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
+	fork_error(pipe_hand);
 	close_fds(tmp, pipe_hand, exit_running_in[2]);
 }
 
@@ -66,7 +67,7 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
 		return (1);
 	if (g_signal == SIGINT)
-		*exit_running[0] = 130;
+		return (*exit_running[0] = 130);
 	saved_in = dup(STDIN_FILENO);
 	if (saved_in == -1)
 		return (perror("dup stdin"), -1);
@@ -85,12 +86,14 @@ int	handle_single_build_in(t_utils_pipe *pipe_hand, t_parser *tmp,
 	return (0);
 }
 
-int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
-		char ***envp)
+int	handle_other(t_parser *parser, t_utils_pipe *pipe_hand,
+	int *exit_running[2], char ***envp)
 {
 	pid_t			last_pid;
 	int				prev_in;
+	t_parser		*tmp;
 
+	tmp = parser;
 	prev_in = -1;
 	while (tmp)
 	{
@@ -113,29 +116,27 @@ int	handle_other(t_parser *tmp, t_utils_pipe *pipe_hand, int *exit_running[2],
 	return (last_cmd_stat(last_pid, exit_running[0]), 0);
 }
 
-int	execute_pipes(t_parser **parser_list, char ***envp, int *running)
+int	execute_pipes(t_parser **parser, char ***envp, int *running)
 {
-	t_parser		*tmp;
 	t_utils_pipe	*pipe_hand;
 	int				exit_stat;
 
 	exit_stat = 0;
-	tmp = *parser_list;
-	init_cmd(&pipe_hand);
-	if (!tmp)
+	init_cmd(&pipe_hand, parser);
+	if (!(*parser))
 		return (free(pipe_hand), EXIT_FAILURE);
-	if (build_in_flag(tmp) && tmp->next == NULL)
+	if (build_in_flag((*parser)) && (*parser)->next == NULL)
 	{
-		if ((handle_single_build_in(pipe_hand, tmp, envp,
+		if ((handle_single_build_in(pipe_hand, (*parser), envp,
 					(int *[2]){&exit_stat, running})) == 1)
-			return (free_list_p(parser_list), 1);
+			return (free_list_p(parser), 1);
 		return (exit_stat);
 	}
 	else
 	{
-		if ((handle_other(tmp, pipe_hand, (int *[2])
+		if ((handle_other((*parser), pipe_hand, (int *[2])
 					{&exit_stat, running}, envp)) == 1)
-			return (free_list_p(parser_list), 1);
+			return (free_list_p(parser), 1);
 	}
 	sig_stat(&exit_stat);
 	init_signals();

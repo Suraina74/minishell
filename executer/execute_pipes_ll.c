@@ -3,31 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_ll.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:42:38 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 18:33:11 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 22:08:16 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-static int	out_redir(t_lexer *tmp_red, t_utils_pipe *pipe_hand)
+static int	out_redir(t_lexer **tmp_red, t_utils_pipe *pipe_hand)
 {
-	if (tmp_red->token == OUT)
+	int	new_fd;
+
+	if ((*tmp_red)->token == OUT)
 	{
-		pipe_hand->fd_out = open(tmp_red->next->word,
+		new_fd = open((*tmp_red)->next->word,
 				O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (pipe_hand->fd_out == -1)
-			return (perror("open"), 1);
+		*tmp_red = (*tmp_red)->next;
 	}
-	else if (tmp_red->token == OUTOUT)
+	else if ((*tmp_red)->token == OUTOUT)
 	{
-		pipe_hand->fd_out = open(tmp_red->next->word,
+		new_fd = open((*tmp_red)->next->word,
 				O_CREAT | O_WRONLY | O_APPEND, 0644);
-		if (pipe_hand->fd_out == -1)
-			return (perror("open"), 1);
+		*tmp_red = (*tmp_red)->next;
 	}
+	else
+		return (0);
+	if (new_fd == -1)
+		return (perror("open"), 1);
+	if (pipe_hand->fd_out != STDOUT_FILENO && pipe_hand->fd_out != -1)
+		close(pipe_hand->fd_out);
+	pipe_hand->fd_out = new_fd;
 	return (0);
 }
 
@@ -39,20 +46,23 @@ int	pick_redirections(t_utils_pipe *pipe_hand, t_parser *parser,
 	tmp_red = parser->redirections;
 	while (tmp_red)
 	{
-		if (out_redir(tmp_red, pipe_hand))
+		if (out_redir(&tmp_red, pipe_hand))
 			return (1);
-		if (tmp_red->token == IN)
+		else if (tmp_red->token == IN)
 		{
 			pipe_hand->fd_in = open(tmp_red->next->word, O_RDONLY);
 			if (pipe_hand->fd_in == -1)
-				return (perror("open"), 1);
+				return (free(pipe_hand), perror("open"), 1);
+			tmp_red = tmp_red->next;
 		}
 		else if (tmp_red->token == ININ)
 		{
 			if ((heredoc_start(parser, pipe_hand, exit_stat, envp)) == 1)
 				return (1);
+			tmp_red = tmp_red->next;
 		}
-		tmp_red = tmp_red->next;
+		if (tmp_red != NULL)
+			tmp_red = tmp_red->next;
 	}
 	return (0);
 }

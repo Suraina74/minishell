@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 16:23:38 by schabboe          #+#    #+#             */
-/*   Updated: 2025/12/10 18:35:15 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:14:01 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,14 @@ void	signal_handler(int signal)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+}
+
+int	sigint_return(int *exit_running_in[0])
+{
+	if (g_signal == SIGINT)
+	{
+		*exit_running_in[0] = 130;
+		return (1);
+	}
+	return (0);
 }

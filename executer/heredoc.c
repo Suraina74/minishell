@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 13:58:12 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 19:22:40 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 12:55:29 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	delete_quotes(char **delim)
 {
-	int		i;
-	int		j;
-	char	new_delim[100000];
+	int			i;
+	int			j;
+	static char	new_delim[100000];
 
 	i = 1;
 	j = 0;
@@ -56,11 +56,27 @@ int	heredoc_expander(char **word, char **delim, char ***envp, int *exit_stat)
 	return (0);
 }
 
-static void	setup(char **delim, t_parser *parser, int *hd_fd)
+static void	setup(int *hd_fd)
 {
-	*delim = parser->redirections->next->word;
 	init_signals_heredoc();
 	init_pipe(hd_fd);
+}
+
+void	set_delim_and_heredoc(char **delim, t_parser **parser)
+{
+	t_lexer	*tmp_red;
+
+	(*parser)->heredoc = readline("heredoc > ");
+	tmp_red = (*parser)->redirections;
+	while (tmp_red)
+	{
+		if (tmp_red->token == ININ)
+		{
+			*delim = tmp_red->next->word;
+			break ;
+		}
+		tmp_red = tmp_red->next;
+	}
 }
 
 int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
@@ -69,10 +85,10 @@ int	heredoc_start(t_parser *parser, t_utils_pipe *pipe_hand, int *exit_stat,
 	int			hd_fd[2];
 	char		*delim;
 
-	setup(&delim, parser, hd_fd);
+	setup(hd_fd);
 	while (1 && g_signal != SIGINT)
 	{
-		parser->heredoc = readline("heredoc > ");
+		set_delim_and_heredoc(&delim, &parser);
 		if (parser->heredoc == NULL)
 		{
 			ft_putendl_fd("warning: here-document delimited by end-of-file", 2);

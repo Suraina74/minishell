@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:52:23 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 17:30:55 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 20:55:36 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,7 @@ void	miniloop(int *exit_stat, char ***envp_new)
 		if (rl == NULL)
 			break ;
 		else if ((parsing(&parser_list, rl, *envp_new, *exit_stat)) == 1)
-		{
-			free_copy_envp(envp_new);
-			free(rl);
 			return ;
-		}
 		*exit_stat = execute_pipes(&parser_list, envp_new, &running);
 		if (rl[0] != '\0')
 			add_history(rl);

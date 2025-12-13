@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 10:00:54 by schabboe          #+#    #+#             */
-/*   Updated: 2025/11/27 18:32:11 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/12 22:01:09 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	quote_check(char *string, int i)
 	return (i);
 }
 
-t_lexer	*if_word(int *i, char *string, t_lexer *lexer_list)
+int	if_word(int *i, char *string, t_lexer **lexer_list)
 {
 	char	*part;
 	t_lexer	*node;
@@ -45,9 +45,9 @@ t_lexer	*if_word(int *i, char *string, t_lexer *lexer_list)
 
 	node = NULL;
 	start = *i;
-	*i = quote_check(string, *i);
 	while (string[*i])
 	{
+		*i = quote_check(string, *i);
 		if (string[*i] == '<' || string[*i] == '>' \
 || string[*i] == '|' || string[*i] == ' ')
 			break ;
@@ -56,14 +56,33 @@ t_lexer	*if_word(int *i, char *string, t_lexer *lexer_list)
 	}
 	part = ft_substr(string, start, *i - start);
 	if (part == NULL)
-		return (free_list_l(&lexer_list), NULL);
+		return (free_list_l(lexer_list), 1);
 	node = create_node_l(part);
-	add_to_end_l(&lexer_list, node);
+	if (node == NULL)
+		return (free_list_l(lexer_list), 1);
+	add_to_end_l(lexer_list, node);
 	free(part);
-	return (lexer_list);
+	return (0);
 }
 
-t_lexer	*if_token(int *i, char *string, t_lexer *lexer_list)
+int	double_tokens(int *i, char *string, t_lexer **lexer_list)
+{
+	char	*part;
+	t_lexer	*node;
+
+	part = ft_substr(string, *i, 2);
+	if (part == NULL)
+		return (free_list_l(lexer_list), 1);
+	node = create_node_l(part);
+	if (node == NULL)
+		return (free_list_l(lexer_list), 1);
+	add_to_end_l(lexer_list, node);
+	free(part);
+	(*i)++;
+	return (0);
+}
+
+int	if_token(int *i, char *string, t_lexer **lexer_list)
 {
 	char	*part;
 	t_lexer	*node;
@@ -72,24 +91,21 @@ t_lexer	*if_token(int *i, char *string, t_lexer *lexer_list)
 	if (((string[*i] == '<') && (string[*i + 1] == '<')) \
 || ((string[*i] == '>') && (string[*i + 1] == '>')))
 	{
-		part = ft_substr(string, *i, 2);
-		if (part == NULL)
-			return (free_list_l(&lexer_list), NULL);
-		node = create_node_l(part);
-		add_to_end_l(&lexer_list, node);
-		free(part);
-		(*i)++;
+		if ((double_tokens(i, string, lexer_list)) == 1)
+			return (1);
 	}
 	else if (string[*i] == '<' || string[*i] == '>' || string[*i] == '|')
 	{
 		part = ft_substr(string, *i, 1);
 		if (part == NULL)
-			return (free_list_l(&lexer_list), NULL);
+			return (free_list_l(lexer_list), 1);
 		node = create_node_l(part);
-		add_to_end_l(&lexer_list, node);
+		if (node == NULL)
+			return (free_list_l(lexer_list), 1);
+		add_to_end_l(lexer_list, node);
 		free(part);
 	}
-	return (lexer_list);
+	return (0);
 }
 
 t_lexer	*lexing(char *string)
@@ -101,13 +117,19 @@ t_lexer	*lexing(char *string)
 	lexer_list = NULL;
 	while (string[i])
 	{
+		while (string[i] == ' ')
+			i++;
 		if (!(string[i] == '<' || string[i] == '>' \
-|| string[i] == '|' || string[i] == ' '))
-			lexer_list = if_word(&i, string, lexer_list);
-		else if (string[i] == '<' || string[i] == '>' || string[i] == '|')
-			lexer_list = if_token(&i, string, lexer_list);
-		if (lexer_list == NULL)
-			return (NULL);
+|| string[i] == '|' || string[i] == ' ' || string[i] == '\0'))
+		{
+			if ((if_word(&i, string, &lexer_list) == 1))
+				return (NULL);
+		}
+		if (string[i] == '<' || string[i] == '>' || string[i] == '|')
+		{
+			if ((if_token(&i, string, &lexer_list) == 1))
+				return (NULL);
+		}
 		if (string[i] != '\0')
 			i++;
 	}

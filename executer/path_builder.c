@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path_builder.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 09:29:27 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 18:20:50 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 18:39:42 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,20 @@ static char	*mk_x_path(char **paths, char *command, size_t dir_len)
 	return (NULL);
 }
 
-static char	*get_full_path(char **envp, char *command, int *exit_stat)
+static char	*get_full_path(char **envp, char **commands,
+	int *exit_stat, t_utils_pipe *pipe_hand)
 {
 	char	**paths;
 	char	*full_path;
 	size_t	dir_len;
+	char	*command;
 
+	command = commands[0];
 	if (ft_strchr(command, '/'))
 		return (full_path = ft_strdup(command), full_path);
 	if (!is_path(envp))
 	{
-		ft_putstr_fd(command, 2);
-		ft_putendl_fd(": No such file or directory", 2);
+		path_error_two(command, &envp, &pipe_hand, &commands);
 		exit(EXIT_FAILURE);
 	}
 	paths = ft_split(is_path(envp), ':');
@@ -90,14 +92,14 @@ static char	*get_full_path(char **envp, char *command, int *exit_stat)
 	full_path = mk_x_path(paths, command, dir_len);
 	if (!full_path)
 	{
-		ft_putstr_fd("Command not found: ", 2);
-		ft_putendl_fd(command, 2);
+		path_error(&envp, command, &pipe_hand);
 		*exit_stat = 127;
 	}
 	return (ft_free_path(paths), full_path);
 }
 
-char	**x_path(char **envp, char *command, int *exit_stat)
+char	**x_path(char **envp, char *command,
+	int *exit_stat, t_utils_pipe *pipe_hand)
 {
 	char	**result;
 	char	*full_path;
@@ -106,14 +108,18 @@ char	**x_path(char **envp, char *command, int *exit_stat)
 	{
 		ft_putstr_fd(command, 2);
 		ft_putendl_fd(": command not found", 2);
+		free_copy_envp(&envp);
+		free_list_p(pipe_hand->parser);
+		free(pipe_hand);
 		*exit_stat = 127;
+		return (NULL);
 	}
 	result = ft_split(command, ' ');
 	if (result == NULL || result[0] == NULL)
-		return (free(result), NULL);
-	full_path = get_full_path(envp, result[0], exit_stat);
+		return (free(result), free(pipe_hand), NULL);
+	full_path = get_full_path(envp, result, exit_stat, pipe_hand);
 	if (full_path == NULL)
-		return (ft_free_path(result), NULL);
+		return (ft_free_path(result), free(pipe_hand), NULL);
 	set_stat(exit_stat, command, full_path);
 	free(result[0]);
 	result[0] = full_path;

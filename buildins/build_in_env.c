@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:24:19 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 17:20:21 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 17:04:23 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-int	build_in_env(char ***envp)
+int	build_in_env(char **words, char ***envp)
 {
 	int		i;
 	char	*current;
 
 	i = 0;
+	if (words[0] && words[1])
+		return (ft_putendl_fd("No such file or directory", 2), 0);
 	while ((*envp)[i])
 	{
 		current = ft_strchr((*envp)[i], '=');

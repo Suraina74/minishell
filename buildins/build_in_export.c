@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 14:30:02 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 22:39:06 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/12 21:19:51 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	export_loop(t_parser *tmp, char ***envp, char **envp_new)
 	return (0);
 }
 
-int	build_in_export(t_parser *parser_list, char ***envp)
+int	build_in_export(t_parser *parser_list, char ***envp, int *exit_stat)
 {
 	t_parser	*tmp;
 	int			words_in_node;
@@ -92,6 +92,10 @@ int	build_in_export(t_parser *parser_list, char ***envp)
 		return (0);
 	}
 	if (export_loop(tmp, envp, envp_new) == 1)
+	{
+		*exit_stat = 1;
 		return (1);
+	}
+	*exit_stat = 0;
 	return (0);
 }

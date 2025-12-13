@@ -6,7 +6,7 @@
 /*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 14:14:09 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/05 15:55:18 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/11 11:57:42 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	build_in_echo(char **d2_wds)
 	i = 1;
 	if (d2_wds[i] == NULL)
 		return (ft_putchar('\n'), 0);
-	while (d2_wds[i][0] == '-' && d2_wds[i][1] == 'n')
+	while (d2_wds[i] && d2_wds[i][0] == '-' && d2_wds[i][1] == 'n')
 	{
 		j = 2;
 		while (d2_wds[i][j] == 'n')

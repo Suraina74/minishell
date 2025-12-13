@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils_l.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:32:57 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/04 14:27:31 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/12 15:02:55 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../mini.h"
 
-void	init_cmd(t_utils_pipe **cmd_struct)
+void	init_cmd(t_utils_pipe **cmd_struct, t_parser **parser_list)
 {
 	t_utils_pipe	*tmp;
 
 	tmp = malloc(sizeof(t_utils_pipe));
 	if (!tmp)
 		return ;
-	tmp->command = NULL;
+	tmp->parser = parser_list;
 	tmp->fd[0] = 0;
 	tmp->fd[1] = 0;
 	tmp->fd_in = -1;

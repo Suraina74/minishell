@@ -6,7 +6,7 @@
 /*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/10 21:04:04 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:14:26 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_parser
 
 typedef struct s_utils_pipe
 {
-	char			**command;
+	t_parser		**parser;
 	int				fd[2];
 	int				fd_out;
 	int				fd_in;
@@ -106,26 +106,29 @@ void				skip_exp_in_word(char **word, int *i);
 int					execute_buildin(t_parser *parser_list,
 						char ***envp, int *exit_running[3]);
 int					build_in_echo(char **d2_wds);
-int					build_in_cd(char **path);
+int					build_in_cd(char **d2_array, int *exit_stat);
 int					build_in_pwd(void);
 int					build_in_exit(int *exit_stat, t_parser *parser_list,
 						int *running);
-int					build_in_export(t_parser *parser_list, char ***envp);
+int					build_in_export(t_parser *parser_list, char ***envp,
+						int *exit_stat);
 int					change_existing_var(char *word, char ***envp);
 char				**add_new_vars(char ***envp, char *word, size_t var_count);
 void				free_copy_envp(char ***envp_new);
 int					build_in_unset(t_parser *parser_list, char ***envp);
-int					build_in_env(char ***envp);
+int					build_in_env(char **words, char ***envp);
 int					build_in_flag(t_parser *parser_list);
-void				execute_fun(t_parser *tmp, int *exit_stat, char ***envp);
+void				execute_fun(t_parser *tmp, int *exit_stat,
+						char ***envp, t_utils_pipe *pipe_hand);
 void				init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand,
 						char ***envp, int *exit_running_in[3]);
-void				init_cmd(t_utils_pipe **cmd_struct);
+void				init_cmd(t_utils_pipe **cmd_struct, t_parser **parser_list);
 void				fd_output(t_utils_pipe *pipe_hand, int *is_last);
 void				fd_input(t_utils_pipe *pipe_hand, int *prev_in);
 void				init_pipe(int *fd);
 void				set_stat(int *exit_stat, char *command, char *full_path);
-char				**x_path(char **envp, char *command, int *exit_stat);
+char				**x_path(char **envp, char *command,
+						int *exit_stat, t_utils_pipe *pipe_hand);
 void				last_cmd_stat(pid_t last_pid, int *exit_stat);
 void				close_fds(t_parser *tmp, t_utils_pipe *pipe_hand,
 						int *prev_in);
@@ -142,6 +145,13 @@ void				init_signals_heredoc(void);
 void				signal_handler_child(int signal);
 void				signal_handler(int signal);
 void				signal_handler_heredoc(int signal);
+int					sigint_return(int *exit_running_in[0]);
 void				check_fd_single_buildin(t_utils_pipe *pipe_hand);
 void				sig_stat(int *exit_stat);
+void				path_error(char ***envp, char *command,
+						t_utils_pipe **pipe_hand);
+void				fork_error(t_utils_pipe *pipe_hand);
+void				path_error_two(char *command, char ***envp,
+						t_utils_pipe **pipe_hand, char ***commands);
+
 #endif
