@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/13 11:15:49 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 15:08:52 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	init_child_proc(t_parser *tmp, t_utils_pipe *pipe_hand, char ***envp,
 
 	is_last = 0;
 	init_signals_child();
-	if ((sigint_return(&exit_running_in[0])) == 1)
-		return ;
 	pipe_hand->child_proc = fork();
 	if (pipe_hand->child_proc == 0)
 	{
@@ -97,10 +95,10 @@ int	handle_other(t_parser *parser, t_utils_pipe *pipe_hand,
 	prev_in = -1;
 	while (tmp)
 	{
-		pipe_hand->fd_in = -1;
-		pipe_hand->fd_out = -1;
-		if ((pick_redirections(pipe_hand, tmp, exit_running[0], envp)) == 1)
+		if (reset_fd_pipes(tmp, &pipe_hand, &exit_running[2], envp))
 			return (1);
+		if ((sigint_return(&exit_running[0], &pipe_hand)) == 1)
+			return (130);
 		if (tmp->next)
 			init_pipe(pipe_hand->fd);
 		init_child_proc(tmp, pipe_hand, envp,

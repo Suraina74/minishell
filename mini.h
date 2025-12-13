@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 16:01:22 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/13 11:14:26 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 15:11:37 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,8 @@ void				init_signals_heredoc(void);
 void				signal_handler_child(int signal);
 void				signal_handler(int signal);
 void				signal_handler_heredoc(int signal);
-int					sigint_return(int *exit_running_in[0]);
+int					sigint_return(int *exit_running_in[0],
+						t_utils_pipe **pipe_hand);
 void				check_fd_single_buildin(t_utils_pipe *pipe_hand);
 void				sig_stat(int *exit_stat);
 void				path_error(char ***envp, char *command,
@@ -153,5 +154,7 @@ void				path_error(char ***envp, char *command,
 void				fork_error(t_utils_pipe *pipe_hand);
 void				path_error_two(char *command, char ***envp,
 						t_utils_pipe **pipe_hand, char ***commands);
+int					reset_fd_pipes(t_parser *tmp, t_utils_pipe **pipe_hand,
+						int *exit_running[2], char ***envp);
 
 #endif

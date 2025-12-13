@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils_ll.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:54:54 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/12 17:39:04 by schabboe         ###   ########.fr       */
+/*   Updated: 2025/12/13 15:12:28 by ksoedama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,14 @@ void	check_fd_single_buildin(t_utils_pipe *pipe_hand)
 		}
 		close(pipe_hand->fd_out);
 	}
+}
+
+int	reset_fd_pipes(t_parser *tmp, t_utils_pipe **pipe_hand,
+	int *exit_running[2], char ***envp)
+{
+	(*pipe_hand)->fd_in = -1;
+	(*pipe_hand)->fd_out = -1;
+	if ((pick_redirections(*pipe_hand, tmp, exit_running[0], envp)) == 1)
+		return (1);
+	return (0);
 }
