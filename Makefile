@@ -10,7 +10,7 @@ buildins/build_in_echo.c buildins/build_in_cd.c buildins/build_in_pwd.c buildins
 buildins/build_in_exit.c buildins/build_in_export.c buildins/export_add_new_var.c buildins/export_change_existing_var.c \
 buildins/build_in_unset.c executer/heredoc.c signals/signals.c signals/signals_init.c
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3
 LIBFT_DIR = ./libft
 OBJS = $(SRCS:.c=.o)
 HEADER = -I $(LIBFT_DIR)

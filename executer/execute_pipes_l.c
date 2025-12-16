@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_l.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 13:18:07 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/13 15:08:52 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:36:02 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	handle_other(t_parser *parser, t_utils_pipe *pipe_hand,
 	prev_in = -1;
 	while (tmp)
 	{
-		if (reset_fd_pipes(tmp, &pipe_hand, &exit_running[2], envp))
+		if (reset_fd_pipes(tmp, &pipe_hand, &exit_running[0], envp))
 			return (1);
 		if ((sigint_return(&exit_running[0], &pipe_hand)) == 1)
 			return (130);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils_ll.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ksoedama <ksoedama@student.42.fr>          +#+  +:+       +#+        */
+/*   By: schabboe <schabboe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:54:54 by ksoedama          #+#    #+#             */
-/*   Updated: 2025/12/13 15:12:28 by ksoedama         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:36:07 by schabboe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	check_fd_single_buildin(t_utils_pipe *pipe_hand)
 }
 
 int	reset_fd_pipes(t_parser *tmp, t_utils_pipe **pipe_hand,
-	int *exit_running[2], char ***envp)
+	int *exit_running[0], char ***envp)
 {
 	(*pipe_hand)->fd_in = -1;
 	(*pipe_hand)->fd_out = -1;
