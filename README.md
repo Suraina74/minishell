@@ -9,7 +9,7 @@ redirections, and signal handling.
 
 # Instructions
 
-clone this project, then:
+Clone this project, then:
 
 ``` make ```
 
